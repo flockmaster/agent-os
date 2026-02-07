@@ -20,9 +20,10 @@ description: 核心路由规则 - 让 Agent 每次开窗先读记忆并检查状
 
 ## 1. 任务分发 (Task Dispatch)
 | 触发条件 | 路由目标 |
-|---------|---------| 
-| User 描述新需求 | → `prd-crafter-lite` |
-| PRD 状态为 CONFIRMED | → `feature-flow` 工作流 |
+|---------|---------|
+| User 描述新需求 | → `prd-crafter-pro` (多角色协作 + 递归拆解) |
+| PRD 用户版确认 | → 技术评审 (prd-crafter-pro Phase 5) |
+| PRD 研发版确认 | → `feature-flow` 工作流 |
 | 检测到报错信息 | → `analyze-error` 工作流 |
 | User 说 "回滚" / "撤销" | → `feature-flow` 的 Rollback Command |
 | User 说 "跳过" | → 标记当前任务 BLOCKED，执行下一个 |
