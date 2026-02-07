@@ -12,53 +12,53 @@ last_updated: 2026-02-08
 
 | ID | Name | Category | Occurrences | Confidence | Status |
 |----|------|----------|-------------|------------|--------|
-| P-000 | (示例) Repository Cache Pattern | data-layer | 3 | 0.9 | active |
+| P-001 | Markdown Workflow Pattern | workflow-def | 5 | 0.9 | active |
 
 ## 2. 模式分类 (Categories)
 
 | Category | Description | Count |
 |----------|-------------|-------|
-| data-layer | 数据层模式（Repository, Cache, API） | 0 |
-| ui-layer | UI 层模式（Widget, State, Animation） | 0 |
-| business-logic | 业务逻辑模式（ViewModel, UseCase） | 0 |
-| common | 通用模式（Error Handling, Logging） | 0 |
+| workflow-def | 工作流定义模式 | 1 |
+| data-layer | 数据层模式 | 0 |
+| ui-layer | UI 层模式 | 0 |
+| business-logic | 业务逻辑模式 | 0 |
+| common | 通用模式 | 0 |
 
 ---
 
 ## 3. 模式详情 (Pattern Details)
 
-### P-000: Repository Cache Pattern (示例)
+### P-001: Markdown Workflow Pattern
 
-**Category**: data-layer  
-**Occurrences**: 0  
-**Confidence**: 0.0  
+**Category**: workflow-def  
+**Occurrences**: 5 (start.md, feature-flow.md, analyze-error.md, evolve.md, reflect.md)  
+**Confidence**: 0.9  
 **First Seen**: 2026-02-08  
-**Files**: (暂无)
+**Files**: `.agent/workflows/*.md`
 
 **Description**:
-> Repository 层统一缓存模式，避免重复请求。
+> 使用 Markdown 定义原子工作流，包含 Trigger, Steps 和 Output Format 三要素。
 
 **Template**:
-```dart
-class XxxRepository {
-  final _cache = <String, dynamic>{};
-  
-  Future<T> getWithCache<T>(String key, Future<T> Function() fetch) async {
-    if (_cache.containsKey(key)) return _cache[key] as T;
-    final result = await fetch();
-    _cache[key] = result;
-    return result;
-  }
-  
-  void invalidateCache([String? key]) {
-    if (key != null) {
-      _cache.remove(key);
-    } else {
-      _cache.clear();
-    }
-  }
-}
+```markdown
+---
+description: [Short Description]
+---
+
+# /command - [Workflow Name]
+
+## Trigger
+- 用户输入 `/command`
+
+## Steps
+// turbo (if auto-run)
+1. Step 1...
+2. Step 2...
+
+## Output Format
+(Template)
 ```
+
 
 **Usage**:
 ```dart

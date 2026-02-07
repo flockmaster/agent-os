@@ -1,6 +1,6 @@
 ---
 session_id: evolution-engine-v1
-task_status: EXECUTING
+task_status: IDLE
 auto_fix_attempts: 0
 last_checkpoint: checkpoint-20260208-021900
 stash_applied: false

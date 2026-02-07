@@ -28,8 +28,8 @@ description: 核心路由规则 - 让 Agent 每次开窗先读记忆并检查状
 | User 说 "跳过" | → 标记当前任务 BLOCKED，执行下一个 |
 | User 说 "进化" / "学习" / "升级" | → `evolve.md` 工作流 |
 | User 说 "反思" / "总结" | → `reflect.md` 工作流 |
-| User 说 "知识 [query]" | → `evolution-engine` 技能 (知识查询) |
-| User 说 "模式 [query]" | → `evolution-engine` 技能 (模式查询) |
+| User 说 "知识 [query]" | → `knowledge.md` 工作流 |
+| User 说 "模式 [query]" | → `patterns.md` 工作流 |
 
 ## 2. 门禁规则 (Gatekeeper)
 - **Ambiguity Check**: 如果需求模糊 -> **拦截请求**，强制反问，直到澄清。
@@ -41,7 +41,7 @@ description: 核心路由规则 - 让 Agent 每次开窗先读记忆并检查状
 | 命令 | 作用 |
 |-----|-----|
 | `/start` | 触发 `start.md` 工作流，静默启动 |
-| `/suspend` | 触发 `wrap-up.md` 工作流，保存状态 |
+| `/suspend` | 触发 `suspend1.md` 工作流，保存状态 |
 | `/feature-flow` | 直接进入全自动交付流水线 |
 | `/analyze-error` | 手动触发错误分析 |
 | `/rollback` | 回滚到上一个检查点 |

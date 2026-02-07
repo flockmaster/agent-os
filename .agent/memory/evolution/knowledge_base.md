@@ -12,17 +12,21 @@ last_updated: 2026-02-08
 
 | ID | Title | Category | Confidence | Created | Status |
 |----|-------|----------|------------|---------|--------|
-| k-000 | (示例) Flutter 状态管理最佳实践 | architecture | 0.85 | 2026-02-08 | active |
+| k-001 | Global Configuration Pattern | architecture | 0.9 | 2026-02-08 | active |
+| k-002 | Evolution Engine Architecture | architecture | 0.85 | 2026-02-08 | active |
+| k-003 | GitHub Automation Fallback Strategy | tooling | 0.8 | 2026-02-08 | active |
 
 ## 2. 分类统计 (Category Stats)
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| architecture | 0 | 架构相关知识 |
+| architecture | 2 | 架构相关知识 |
+| tooling | 1 | 工具使用 |
 | debugging | 0 | 调试技巧 |
 | pattern | 0 | 代码模式 |
 | workflow | 0 | 工作流相关 |
-| tooling | 0 | 工具使用 |
+
+
 
 ## 3. 标签云 (Tag Cloud)
 
