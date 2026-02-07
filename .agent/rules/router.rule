@@ -31,6 +31,7 @@ description: 核心路由规则 - 让 Agent 每次开窗先读记忆并检查状
 | User 说 "知识 [query]" | → `knowledge.md` 工作流 |
 | User 说 "模式 [query]" | → `patterns.md` 工作流 |
 | User 说 "/meta [desc]" 或 "系统改进" | → `meta.md` 工作流 (修改 Agent OS 本身) |
+| User 说 "/export" 或 "导出系统" | → `export.md` 工作流 (提取可移植压缩包) |
 
 ## 2. 门禁规则 (Gatekeeper)
 - **Ambiguity Check**: 如果需求模糊 -> **拦截请求**，强制反问，直到澄清。
@@ -52,6 +53,7 @@ description: 核心路由规则 - 让 Agent 每次开窗先读记忆并检查状
 | `/knowledge [query]` | 📚 查询知识库 |
 | `/patterns [query]` | 🔄 查询代码模式库 |
 | `/meta [desc]` | 🔧 修改 Agent OS 系统本身 |
+| `/export` | 📦 导出系统为可移植压缩包 |
 
 ## 4. 进化引擎自动行为 (Evolution Auto Behaviors)
 > 这些行为自动触发，无需用户命令。
