@@ -15,12 +15,13 @@ last_updated: 2026-02-08
 | k-001 | Global Configuration Pattern | architecture | 0.9 | 2026-02-08 | active |
 | k-002 | Evolution Engine Architecture | architecture | 0.85 | 2026-02-08 | active |
 | k-003 | GitHub Automation Fallback Strategy | tooling | 0.8 | 2026-02-08 | active |
+| k-004 | Context Completeness Pattern | architecture | 0.95 | 2026-02-08 | active |
 
 ## 2. 分类统计 (Category Stats)
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| architecture | 2 | 架构相关知识 |
+| architecture | 3 | 架构相关知识 |
 | tooling | 1 | 工具使用 |
 | debugging | 0 | 调试技巧 |
 | pattern | 0 | 代码模式 |
