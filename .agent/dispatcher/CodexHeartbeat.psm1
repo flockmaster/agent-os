@@ -393,6 +393,106 @@ function Clear-CodexTasks {
     Write-Host "[CLEAN] All task records and jobs cleared" -ForegroundColor Yellow
 }
 
+# T-HB-04: 多任务并行心跳 — 批量启动 + 汇总等待
+function Start-CodexTaskPool {
+    param(
+        [Parameter(Mandatory)]
+        [hashtable[]]$Tasks,  # @( @{TaskId="T-001"; Prompt="..."}, @{TaskId="T-002"; Prompt="..."} )
+        [string]$WorkDir = (Get-Location).Path,
+        [string]$Model = "",
+        [int]$TimeoutSeconds = 3600,
+        [string]$SandboxMode = "danger-full-access",
+        [int]$MaxConcurrent = 3
+    )
+
+    $results = @()
+    $queue = [System.Collections.Queue]::new()
+    $Tasks | ForEach-Object { $queue.Enqueue($_) }
+    $running = @{}
+
+    Write-Host ""
+    Write-Host "[POOL] Starting task pool: $($Tasks.Count) tasks, max $MaxConcurrent concurrent" -ForegroundColor Cyan
+
+    while ($queue.Count -gt 0 -or $running.Count -gt 0) {
+        # 启动新任务（如果有空位）
+        while ($queue.Count -gt 0 -and $running.Count -lt $MaxConcurrent) {
+            $taskDef = $queue.Dequeue()
+            $taskResult = Start-CodexTask -TaskId $taskDef.TaskId -Prompt $taskDef.Prompt `
+                -WorkDir $WorkDir -Model $Model -TimeoutSeconds $TimeoutSeconds -SandboxMode $SandboxMode
+            $running[$taskDef.TaskId] = $taskResult
+            Write-Host "[POOL] Started: $($taskDef.TaskId) (running: $($running.Count)/$MaxConcurrent)" -ForegroundColor DarkGray
+        }
+
+        # 检查所有运行中任务
+        $completed = @()
+        foreach ($taskId in @($running.Keys)) {
+            $status = Get-CodexTaskStatus -TaskId $taskId
+            if ($status -and $status.status -ne "RUNNING") {
+                $completed += $taskId
+                $results += [PSCustomObject]@{
+                    TaskId = $taskId
+                    Status = $status.status
+                    Progress = $status.progress
+                }
+                Write-Host "[POOL] Completed: $taskId → $($status.status)" -ForegroundColor $(if ($status.status -eq "DONE") { "Green" } else { "Yellow" })
+            }
+        }
+        $completed | ForEach-Object { $running.Remove($_) }
+
+        if ($running.Count -gt 0) {
+            Start-Sleep -Seconds 5
+        }
+    }
+
+    Write-Host "[POOL] All $($Tasks.Count) tasks processed" -ForegroundColor Green
+    $results | Format-Table -AutoSize
+    return $results
+}
+
+# T-HB-05: 心跳数据持久化 — 重新附加已有 Job
+function Restore-CodexTasks {
+    <#
+    .SYNOPSIS
+        尝试恢复任务状态文件中记录的 Job。
+    .DESCRIPTION
+        遍历 TaskDir 中的 JSON 状态文件，检查对应 JobId 是否仍在运行。
+        如果 Job 已丢失（进程重启），标记为 LOST。
+    #>
+    Initialize-CodexHeartbeat
+    $files = Get-ChildItem -Path $Script:TaskDir -Filter "*.json" -ErrorAction SilentlyContinue
+    if (-not $files) {
+        Write-Host "[RESTORE] No task records found" -ForegroundColor DarkGray
+        return
+    }
+
+    $restored = 0
+    $lost = 0
+    foreach ($file in $files) {
+        $state = Get-Content $file.FullName -Raw | ConvertFrom-Json
+        if ($state.status -ne "RUNNING") { continue }
+
+        $job = $null
+        if ($state.jobId) {
+            $job = Get-Job -Id $state.jobId -ErrorAction SilentlyContinue
+        }
+
+        if ($job -and $job.State -eq "Running") {
+            Write-Host "[RESTORE] Task $($state.taskId): Job $($state.jobId) still running" -ForegroundColor Green
+            $restored++
+        } else {
+            # Job 丢失，标记状态
+            $state.status = "LOST"
+            $state.progress = "Job lost after process restart. Last heartbeat: $($state.lastHeartbeat)"
+            $state.lastHeartbeat = (Get-Date).ToString("o")
+            $state | ConvertTo-Json -Depth 5 | Set-Content $file.FullName -Encoding UTF8
+            Write-Host "[RESTORE] Task $($state.taskId): Job LOST (process restarted)" -ForegroundColor Yellow
+            $lost++
+        }
+    }
+
+    Write-Host "[RESTORE] Summary: $restored running, $lost lost" -ForegroundColor Cyan
+}
+
 Export-ModuleMember -Function @(
     'Initialize-CodexHeartbeat',
     'Start-CodexTask',
@@ -400,5 +500,7 @@ Export-ModuleMember -Function @(
     'Wait-CodexTask',
     'Stop-CodexTask',
     'Get-CodexTasks',
-    'Clear-CodexTasks'
+    'Clear-CodexTasks',
+    'Start-CodexTaskPool',
+    'Restore-CodexTasks'
 )
