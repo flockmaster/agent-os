@@ -145,14 +145,19 @@ PM 实时读取 Worker 的 stdout，识别结构化标签：
 
 ### 5.4 向 Worker 发送回复
 
-**方案 A (首选) - 重启注入**：
-- 如果 Worker 有问题且 PM 能回答，PM 终止当前 Worker
-- 在原始 Prompt 中追加问题答案，重新启动 Worker
-- Worker 在新上下文中继续执行
+> ✅ **技术预研结论 (2026-02-09)**: Codex `exec` 模式为非交互式，运行中无法接收 stdin 输入。采用"重启注入"方案。
 
-**方案 B (备用) - stdin 流式输入**：
-- 如果 Codex CLI 支持运行时 stdin，PM 直接写入回复
-- 需技术预研验证可行性
+**重启注入机制**：
+1. PM 检测到 Worker 输出问题 (通过 `--json` 事件流)
+2. PM 终止当前 Worker 进程
+3. PM 在原始 Prompt 尾部追加问题答案：
+   ```
+   [原始任务 Prompt]
+   
+   ---
+   [补充信息] 关于你之前的问题 "XXX"，答案是: YYY
+   ```
+4. PM 重新启动 Worker，Worker 在新上下文中继续执行
 
 ### 5.5 超时策略
 
@@ -229,77 +234,81 @@ PM 实时读取 Worker 的 stdout，识别结构化标签：
 
 ## 7. Worker 输出协议
 
-### 7.1 结构化输出格式
+> ✅ **技术预研结论 (2026-02-09)**: Codex CLI 原生支持 `--json` JSONL 事件流输出，无需自定义标签。
 
-Worker 在执行过程中应使用以下标签输出：
+### 7.1 启动命令
 
-```
-[PROGRESS] 25% - 正在分析代码结构...
-[PROGRESS] 50% - 正在编写实现代码...
-[QUESTION] API 的认证方式是 Bearer Token 还是 API Key？
-[PROGRESS] 75% - 正在编写测试代码...
-[DONE] 任务完成，提交: abc1234
+```bash
+codex exec --json --full-auto --output-last-message result.md "任务描述..."
 ```
 
-### 7.2 标签详细定义
+| 参数 | 作用 |
+|-----|------|
+| `--json` | 输出 JSONL 格式事件流 |
+| `--full-auto` | 全自动模式，无需人工批准 |
+| `--output-last-message` | 将最终消息写入文件 |
+| `--output-schema` | (可选) 约束最终响应格式 |
 
-#### `[PROGRESS]` - 进度报告
-```
-[PROGRESS] <百分比>% - <当前操作描述>
-```
+### 7.2 JSONL 事件类型
 
-#### `[QUESTION]` - 提问
-```
-[QUESTION] <问题描述>
-[CONTEXT] <可选的上下文信息>
-[OPTIONS] <可选的选项列表>
-```
+PM 实时解析 Worker 的 stdout JSONL 事件流：
 
-示例：
-```
-[QUESTION] 用户认证应该使用哪种方式？
-[CONTEXT] 发现项目中同时存在 Firebase Auth 和自建认证
-[OPTIONS] A) Firebase Auth  B) 自建认证  C) 两者兼容
-```
+| 事件类型 | 说明 | PM 响应 |
+|---------|------|--------|
+| `agent_message` | Agent 输出消息 | 记录进度 |
+| `tool_call` | 调用工具 (shell, file_write 等) | 监控执行 |
+| `tool_result` | 工具执行结果 | 检查成功/失败 |
+| `error` | 发生错误 | 判断重试或 BLOCKED |
+| `session_end` | 会话结束 | 更新 PRD 状态 |
 
-#### `[DONE]` - 完成报告
-```
-[DONE] <完成摘要>
-[COMMIT] <Git commit hash>
-[FILES] <修改的文件列表>
-```
+### 7.3 PM 事件处理流程
 
-#### `[ERROR]` - 错误报告
-```
-[ERROR] <错误类型>: <错误描述>
-[STACK] <可选的堆栈信息>
-[SUGGESTION] <可选的建议>
-```
+```python
+# 伪代码
+process = subprocess.Popen(
+    ["codex", "exec", "--json", "--full-auto", prompt],
+    stdout=subprocess.PIPE
+)
 
-### 7.3 PM 输出解析流程
-
-```
-While Worker 运行:
-    line = 读取 Worker stdout
+for line in process.stdout:
+    event = json.loads(line)
     
-    If line 匹配 [QUESTION]:
-        question = 解析问题内容
-        If PM 能回答(question):
-            重启 Worker (追加答案)
-        Else:
-            标记 BLOCKED
-            跳过执行其他任务
-    
-    If line 匹配 [DONE]:
-        更新 PRD 状态 → DONE
-        调度下一个任务
-    
-    If line 匹配 [ERROR]:
-        If 可重试:
-            标记 RETRY
-        Else:
-            标记 BLOCKED
+    match event["type"]:
+        case "agent_message":
+            content = event["content"]
+            # 检查是否包含提问语义
+            if is_question(content):
+                if pm_can_answer(content):
+                    process.terminate()
+                    new_prompt = original_prompt + f"\n\n[补充] {answer}"
+                    restart_worker(new_prompt)
+                else:
+                    mark_blocked(task_id, content)
+                    skip_to_next_task()
+        
+        case "error":
+            if retry_count < 3:
+                mark_retry(task_id)
+            else:
+                mark_failed(task_id)
+        
+        case "session_end":
+            if event["success"]:
+                mark_done(task_id)
+                update_prd_status(task_id, "✅ DONE")
+            schedule_next_task()
 ```
+
+### 7.4 问题识别策略
+
+由于 Codex 不会显式标记"问题"，PM 需通过语义分析识别：
+
+| 识别模式 | 示例 |
+|---------|-----|
+| 疑问句 | "请问 XXX 应该用哪种方式？" |
+| 选择请求 | "有两个选项 A 和 B，请确认" |
+| 阻塞声明 | "无法继续，因为缺少 XXX 信息" |
+| 确认请求 | "是否要删除现有数据？" |
 
 ---
 
@@ -365,21 +374,18 @@ While Worker 运行:
 | ⚠️ 阻塞任务过多 | 整体进度停滞 | 通知 User 批量处理阻塞问题 |
 | ⚠️ Git 冲突 | 代码丢失 | 每个任务完成后自动 commit |
 
-### 11.2 技术预研依赖 (阻塞风险)
+### 11.2 技术预研依赖 ✅ 已完成
 
-> ⚠️ **注意**: 以下技术点需在正式开发前验证，若验证失败可能导致方案调整。
+> ✅ **预研完成时间**: 2026-02-09 17:16
 
-| 预研项 | 验证内容 | 影响范围 | 备选方案 |
-|-------|---------|---------|---------|
-| 🔬 **Codex CLI 交互能力** | 运行中的 Worker 能否接收 stdin 输入？ | 第 5.4 节 "向 Worker 发送回复" | 若不支持 → 使用 "重启注入" 方案 |
-| 🔬 **结构化输出可行性** | Worker 能否被 Prompt 约束为结构化输出？ | 第 7 节 "Worker 输出协议" | 若不可靠 → PM 使用模糊匹配解析 |
+| 预研项 | 验证结论 | 采用方案 |
+|-------|---------|---------|
+| 🔬 **Codex CLI 交互能力** | ⚠️ 有限 - `exec` 模式不支持运行时 stdin | ✅ 采用"重启注入"方案 (第 5.4 节已更新) |
+| 🔬 **结构化输出可行性** | ✅ 原生支持 `--json` JSONL 事件流 | ✅ 采用原生 JSONL (第 7 节已更新) |
 
-**预研时间预估**: 1-2 小时
-
-**预研完成标准**:
-1. 提供技术验证结论文档
-2. 若方案可行，继续正式开发
-3. 若方案不可行，启用备选方案并更新 PRD
+**关键发现**:
+- Codex CLI 原生 `--json` 比自定义标签更可靠
+- PM 需通过语义分析识别 Agent 提问，而非依赖显式标签
 
 ---
 
