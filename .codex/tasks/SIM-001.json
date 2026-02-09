@@ -1,0 +1,15 @@
+﻿{
+    "jobName":  "Codex-SIM-001",
+    "timeout":  120,
+    "startTime":  "2026-02-10T01:18:35.6956098+08:00",
+    "progress":  "DONE: All 7 steps completed successfully",
+    "lastHeartbeat":  "2026-02-10T01:19:00.9466871+08:00",
+    "prompt":  "Simulated web dev task",
+    "lastMsgSize":  0,
+    "error":  null,
+    "taskId":  "SIM-001",
+    "status":  "DONE",
+    "lastMsgFile":  "",
+    "exitCode":  0,
+    "jobId":  1
+}

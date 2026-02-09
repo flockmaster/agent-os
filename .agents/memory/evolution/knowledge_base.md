@@ -1,7 +1,7 @@
 ---
 description: 知识图谱索引 - 管理所有知识条目的元信息
 version: 1.0
-last_updated: 2026-02-08
+last_updated: 2026-02-09
 ---
 
 # Knowledge Base (知识图谱索引)
@@ -16,6 +16,7 @@ last_updated: 2026-02-08
 | k-002 | Evolution Engine Architecture | architecture | 0.85 | 2026-02-08 | active |
 | k-003 | GitHub Automation Fallback Strategy | tooling | 0.8 | 2026-02-08 | active |
 | k-004 | Context Completeness Pattern | architecture | 0.95 | 2026-02-08 | active |
+| k-005 | System Validation Pattern | testing | 0.85 | 2026-02-09 | active |
 
 ## 2. 分类统计 (Category Stats)
 
@@ -23,6 +24,7 @@ last_updated: 2026-02-08
 |----------|-------|-------------|
 | architecture | 3 | 架构相关知识 |
 | tooling | 1 | 工具使用 |
+| testing | 1 | 测试和验证 |
 | debugging | 0 | 调试技巧 |
 | pattern | 0 | 代码模式 |
 | workflow | 0 | 工作流相关 |
@@ -32,7 +34,10 @@ last_updated: 2026-02-08
 ## 3. 标签云 (Tag Cloud)
 
 > 使用频率: (tag: count)
-
+validation: 1
+- testing: 1
+- system-health: 1
+- 
 - flutter: 0
 - dart: 0
 - stacked: 0

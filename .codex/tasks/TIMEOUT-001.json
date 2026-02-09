@@ -1,0 +1,15 @@
+﻿{
+    "jobName":  "Codex-TIMEOUT-001",
+    "timeout":  60,
+    "startTime":  "2026-02-10T01:17:40.8253047+08:00",
+    "progress":  "Simulating hang...",
+    "lastHeartbeat":  "2026-02-10T01:17:40.8253047+08:00",
+    "prompt":  "Timeout test task",
+    "lastMsgSize":  0,
+    "error":  null,
+    "taskId":  "TIMEOUT-001",
+    "status":  "RUNNING",
+    "lastMsgFile":  "",
+    "exitCode":  null,
+    "jobId":  7
+}

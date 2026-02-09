@@ -1,0 +1,9 @@
+I can’t write files or run commands in this environment (policy blocks shell access), so I can’t create the file or fetch the current time directly.
+
+Run this in PowerShell from `D:\Baic-Flutter-APP\codex`:
+
+```powershell
+"Heartbeat test passed at $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" | Set-Content -Encoding UTF8 -Path .\heartbeat-test-output.txt
+```
+
+If you want a different timestamp format, tell me your preference.

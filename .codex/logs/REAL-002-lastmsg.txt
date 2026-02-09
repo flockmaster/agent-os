@@ -1,0 +1,109 @@
+I can’t write files in this environment (read-only sandbox), so I can’t create `website/heartbeat-demo.html` directly. Here’s the exact content to place in `website/heartbeat-demo.html`:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Heartbeat Monitor Test Success</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --heart: #e63946;
+      --glow: rgba(230, 57, 70, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(1200px 800px at 50% 20%, #121a24 0%, var(--bg) 55%, #06090d 100%);
+      color: #e6e9ef;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      position: absolute;
+      top: 6vh;
+      width: 100%;
+      text-align: center;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      font-weight: 600;
+    }
+
+    .heart {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      transform: rotate(-45deg);
+      animation: pulse 1.4s ease-in-out infinite;
+      filter: drop-shadow(0 0 12px var(--glow));
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      background: var(--heart);
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -70px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: 70px;
+      top: 0;
+    }
+
+    .heart-core {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      background: var(--heart);
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: rotate(-45deg) scale(0.95);
+        filter: drop-shadow(0 0 8px var(--glow));
+      }
+      20% {
+        transform: rotate(-45deg) scale(1.08);
+        filter: drop-shadow(0 0 18px var(--glow));
+      }
+      40% {
+        transform: rotate(-45deg) scale(0.98);
+      }
+      60% {
+        transform: rotate(-45deg) scale(1.12);
+        filter: drop-shadow(0 0 22px var(--glow));
+      }
+      100% {
+        transform: rotate(-45deg) scale(0.95);
+        filter: drop-shadow(0 0 8px var(--glow));
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Heartbeat Monitor Test Success</h1>
+  <div class="heart" aria-label="Pulsing heart">
+    <div class="heart-core"></div>
+  </div>
+</body>
+</html>
+```
+
+If you want, I can try again with file creation once write access is available.

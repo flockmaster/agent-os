@@ -1,7 +1,7 @@
 ---
 description: 待学习队列 - 记录待提取和处理的学习素材
 version: 1.0
-last_updated: 2026-02-08
+last_updated: 2026-02-09
 ---
 
 # Learning Queue (待学习队列)
@@ -14,7 +14,7 @@ last_updated: 2026-02-08
 |--------|-------|
 | 待处理 | 0 |
 | 处理中 | 0 |
-| 今日已处理 | 0 |
+| 今日已处理 | 1 |
 
 ## 2. 待学习素材 (Pending Items)
 
@@ -59,4 +59,4 @@ last_updated: 2026-02-08
 
 | Date | Source Type | Source ID | Output | Notes |
 |------|-------------|-----------|--------|-------|
-| - | - | - | - | 暂无历史 |
+| 2026-02-09 | conversation | system-validation | k-005 | System Validation Pattern 知识条目 |

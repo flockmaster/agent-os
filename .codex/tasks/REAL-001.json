@@ -1,0 +1,15 @@
+﻿{
+    "jobName":  "Codex-REAL-001",
+    "timeout":  3600,
+    "startTime":  "2026-02-10T01:19:01.2159265+08:00",
+    "progress":  "DONE - last message written",
+    "lastHeartbeat":  "2026-02-10T01:19:16.3060754+08:00",
+    "prompt":  "Create a file named heartbeat-test-output.txt in the current directory with the text: Heartbeat test passed at followed by the current date and time.",
+    "lastMsgSize":  0,
+    "error":  null,
+    "taskId":  "REAL-001",
+    "status":  "DONE",
+    "lastMsgFile":  "D:\\Baic-Flutter-APP\\codex\\.codex\\heartbeat\\..\\logs\\REAL-001-lastmsg.txt",
+    "exitCode":  0,
+    "jobId":  3
+}

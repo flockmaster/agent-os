@@ -132,6 +132,27 @@ fi
 find "$AGENT_DST" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 ok "已清理 __pycache__"
 
+# 4.2.1 复制 AGENT.md 到项目根目录
+AGENT_MD_SRC="$SCRIPT_DIR/AGENT.md"
+AGENT_MD_DST="$TARGET_DIR/AGENT.md"
+if [ -f "$AGENT_MD_SRC" ]; then
+    cp "$AGENT_MD_SRC" "$AGENT_MD_DST"
+    ok "已复制 AGENT.md → $AGENT_MD_DST"
+else
+    warn "AGENT.md 不存在 → $AGENT_MD_SRC，跳过"
+fi
+
+# 4.2.2 复制 .gemini/ 目录（含 GEMINI.md.example）
+GEMINI_SRC="$SCRIPT_DIR/.gemini"
+GEMINI_DST="$TARGET_DIR/.gemini"
+if [ -d "$GEMINI_SRC" ]; then
+    rm -rf "$GEMINI_DST"
+    cp -r "$GEMINI_SRC" "$GEMINI_DST"
+    ok "已复制 .gemini/ → $GEMINI_DST"
+else
+    warn ".gemini/ 不存在 → $GEMINI_SRC，跳过"
+fi
+
 # 4.3 写入 project_decisions.md
 TODAY="$(date +%Y-%m-%d)"
 cat > "$AGENT_DST/memory/project_decisions.md" << EOF

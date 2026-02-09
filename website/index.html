@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 Antigravity Agent OS - 给 AI 装上大脑</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div id="particles-bg"></div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🌌</span>
+                <span class="logo-text">Antigravity</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#hero">首页</a></li>
+                <li><a href="#features">核心功能</a></li>
+                <li><a href="#architecture">架构</a></li>
+                <li><a href="#demo">演示</a></li>
+                <li><a href="#install" class="cta-btn">快速开始</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="glitch" data-text="Antigravity Agent OS">
+                    Antigravity Agent OS
+                </h1>
+                <p class="subtitle">
+                    给你的 AI 编程助手装上<span class="highlight">"大脑"</span>
+                </p>
+                <p class="description">
+                    让 AI 不再是金鱼记忆，而是一个越用越聪明的编程搭档
+                </p>
+                <div class="hero-badges">
+                    <span class="badge badge-primary">🎯 任务调度 v3.0</span>
+                    <span class="badge badge-secondary">🧬 进化引擎 v1.0</span>
+                    <span class="badge badge-success">🟢 生产可用</span>
+                </div>
+                <div class="hero-actions">
+                    <a href="#install" class="btn btn-primary">
+                        <span>立即安装</span>
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/flockmaster/agent-os" class="btn btn-outline">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"/>
+                        </svg>
+                        <span>GitHub</span>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="brain-container">
+                    <div class="brain-core"></div>
+                    <div class="orbit orbit-1"></div>
+                    <div class="orbit orbit-2"></div>
+                    <div class="orbit orbit-3"></div>
+                    <div class="neural-node node-1"></div>
+                    <div class="neural-node node-2"></div>
+                    <div class="neural-node node-3"></div>
+                    <div class="neural-node node-4"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pain Points Section -->
+    <section id="pain" class="pain-section">
+        <div class="container">
+            <h2 class="section-title">😤 你还在忍受这些痛点吗？</h2>
+            <div class="pain-grid">
+                <div class="pain-card" data-intensity="5">
+                    <div class="fire-indicator">🔥🔥🔥🔥🔥</div>
+                    <p>新开一个聊天窗口，又要从头跟 AI 解释项目背景</p>
+                </div>
+                <div class="pain-card" data-intensity="4">
+                    <div class="fire-indicator">🔥🔥🔥🔥</div>
+                    <p>让 AI 改完代码，它忘了 commit，你也忘了</p>
+                </div>
+                <div class="pain-card" data-intensity="5">
+                    <div class="fire-indicator">🔥🔥🔥🔥🔥</div>
+                    <p>同样的 bug 上周修过一次，今天 AI 又走了一遍弯路</p>
+                </div>
+                <div class="pain-card" data-intensity="3">
+                    <div class="fire-indicator">🔥🔥🔥</div>
+                    <p>让 AI 写个功能，写一半停下来问"要继续吗？"</p>
+                </div>
+                <div class="pain-card" data-intensity="5">
+                    <div class="fire-indicator">🔥🔥🔥🔥🔥</div>
+                    <p>PRD 拆了 20 个子任务，在一个窗口做完上下文必爆</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2 class="section-title">🚀 核心功能</h2>
+            <div class="features-grid">
+                <!-- Feature 1: Codex Dispatcher -->
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Codex 任务调度器</h3>
+                    <p>自动拆解复杂任务，智能管理子任务执行流程</p>
+                    <ul class="feature-list">
+                        <li>✓ PM-Worker 协作模式</li>
+                        <li>✓ 自动依赖解析</li>
+                        <li>✓ 会话恢复和分支</li>
+                        <li>✓ 阻塞检测</li>
+                    </ul>
+                    <div class="feature-glow"></div>
+                </div>
+
+                <!-- Feature 2: Evolution Engine -->
+                <div class="feature-card">
+                    <div class="feature-icon">🧬</div>
+                    <h3>进化引擎</h3>
+                    <p>让 AI 从每次交互中学习，持续自我进化</p>
+                    <ul class="feature-list">
+                        <li>✓ 知识收割</li>
+                        <li>✓ 工作流优化</li>
+                        <li>✓ 模式检测</li>
+                        <li>✓ 反思引擎</li>
+                    </ul>
+                    <div class="feature-glow"></div>
+                </div>
+
+                <!-- Feature 3: Context Manager -->
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>记忆系统</h3>
+                    <p>短期记忆、长期记忆、用户偏好全方位管理</p>
+                    <ul class="feature-list">
+                        <li>✓ 活动上下文</li>
+                        <li>✓ 项目决策记忆</li>
+                        <li>✓ 用户偏好学习</li>
+                        <li>✓ 跨会话传承</li>
+                    </ul>
+                    <div class="feature-glow"></div>
+                </div>
+
+                <!-- Feature 4: PRD Crafter -->
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>PRD 生成器</h3>
+                    <p>工程级需求文档，支持多角色协作和批判性审查</p>
+                    <ul class="feature-list">
+                        <li>✓ 递归任务拆解</li>
+                        <li>✓ 多角色视角</li>
+                        <li>✓ 技术评审门禁</li>
+                        <li>✓ 用户版+研发版</li>
+                    </ul>
+                    <div class="feature-glow"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="architecture-section">
+        <div class="container">
+            <h2 class="section-title">🏗️ 系统架构</h2>
+            <div class="architecture-diagram">
+                <div class="arch-layer layer-user">
+                    <h4>🧑‍💻 用户层</h4>
+                    <div class="arch-boxes">
+                        <div class="arch-box">VS Code</div>
+                        <div class="arch-box">CLI</div>
+                        <div class="arch-box">API</div>
+                    </div>
+                </div>
+                <div class="arch-arrow">⬇️</div>
+                <div class="arch-layer layer-dispatcher">
+                    <h4>🎯 调度层</h4>
+                    <div class="arch-boxes">
+                        <div class="arch-box">Antigravity PM</div>
+                        <div class="arch-box">Task Queue</div>
+                    </div>
+                </div>
+                <div class="arch-arrow">⬇️</div>
+                <div class="arch-layer layer-worker">
+                    <h4>🔧 执行层</h4>
+                    <div class="arch-boxes">
+                        <div class="arch-box">Codex Worker</div>
+                        <div class="arch-box">Session Manager</div>
+                    </div>
+                </div>
+                <div class="arch-arrow">⬇️</div>
+                <div class="arch-layer layer-memory">
+                    <h4>🧠 记忆层</h4>
+                    <div class="arch-boxes">
+                        <div class="arch-box">Active Context</div>
+                        <div class="arch-box">Project Decisions</div>
+                        <div class="arch-box">User Preferences</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo-section">
+        <div class="container">
+            <h2 class="section-title">🎬 工作流演示</h2>
+            <div class="demo-container">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="btn-close"></span>
+                            <span class="btn-minimize"></span>
+                            <span class="btn-maximize"></span>
+                        </div>
+                        <div class="terminal-title">Antigravity Agent OS</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="prompt">$</span>
+                            <span class="command">codex dispatch --prd docs/prd/my-feature-dev.md</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="info">📄 读取 PRD: docs/prd/my-feature-dev.md</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="info">🎯 识别到 8 个任务</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="success">✅ T-001: 创建数据模型 [DONE]</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="success">✅ T-002: 实现 API 接口 [DONE]</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="working">⚙️  T-003: 编写单元测试 [IN PROGRESS]</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="dim">⏳ T-004: 集成测试 [PENDING]</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="dim">⏳ T-005: 文档更新 [PENDING]</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="cursor">▋</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="install" class="install-section">
+        <div class="container">
+            <h2 class="section-title">⚡ 一键安装</h2>
+            <div class="install-tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="macos">macOS / Linux</button>
+                    <button class="tab-btn" data-tab="windows">Windows</button>
+                </div>
+                <div class="tab-contents">
+                    <div class="tab-content active" data-tab="macos">
+                        <div class="code-block">
+                            <button class="copy-btn" data-code="git clone https://github.com/flockmaster/agent-os.git&#10;cd agent-os&#10;bash setup.sh /path/to/your-project">
+                                <svg viewBox="0 0 24 24" width="16" height="16">
+                                    <path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
+                                </svg>
+                            </button>
+                            <pre><code>git clone https://github.com/flockmaster/agent-os.git
+cd agent-os
+bash setup.sh /path/to/your-project</code></pre>
+                        </div>
+                    </div>
+                    <div class="tab-content" data-tab="windows">
+                        <div class="code-block">
+                            <button class="copy-btn" data-code='git clone https://github.com/flockmaster/agent-os.git&#10;cd agent-os&#10;pwsh setup.ps1 -TargetDir "D:\your-project"'>
+                                <svg viewBox="0 0 24 24" width="16" height="16">
+                                    <path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
+                                </svg>
+                            </button>
+                            <pre><code>git clone https://github.com/flockmaster/agent-os.git
+cd agent-os
+pwsh setup.ps1 -TargetDir "D:\your-project"</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="install-note">
+                <p>💡 安装向导会交互式地帮你配好一切：项目名称、技术栈选择、AI 工具配置</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-icon">🌌</span>
+                    <span>Antigravity Agent OS</span>
+                </div>
+                <div class="footer-links">
+                    <a href="https://github.com/flockmaster/agent-os">GitHub</a>
+                    <a href="https://github.com/flockmaster/agent-os/issues">Issues</a>
+                    <a href="docs/USER_GUIDE.md">文档</a>
+                </div>
+                <div class="footer-copyright">
+                    <p>Made with ❤️ by the Antigravity Team</p>
+                    <p>© 2026 Antigravity Agent OS</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
