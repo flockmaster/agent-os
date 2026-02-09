@@ -164,6 +164,16 @@ shared:
       complex: 1200               # 20 分钟
     prompt_max_tokens: 4000       # Prompt 最大 Token
     compress_threshold: 4000      # 压缩阈值 Token
+
+  # 心跳监控配置 (T-AGENT-06)
+  heartbeat:
+    module_path: ".agent/dispatcher/CodexHeartbeat.psm1"
+    heartbeat_timeout_sec: 120    # 心跳超时 (秒)
+    poll_interval_sec: 5          # 轮询间隔 (秒)
+    sandbox_mode: "danger-full-access"  # Codex sandbox 模式
+    task_dir: ".agent/memory/heartbeat_tasks"
+    log_dir: ".agent/memory/heartbeat_logs"
+    max_concurrent_tasks: 3       # 最大并行任务数
 ```
 
 ---
