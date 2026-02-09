@@ -97,3 +97,14 @@ class Timer:
             return 0.0
         end = self._end if self._end is not None else time.monotonic()
         return end - self._start
+
+
+# T-AGENT-04: 心跳监控状态枚举（与 PowerShell 模块对齐）
+class HeartbeatStatus(Enum):
+    """Codex 任务心跳状态，与 CodexHeartbeat.psm1 中的 status 字段对应。"""
+    RUNNING = "RUNNING"
+    DONE = "DONE"
+    ERROR = "ERROR"
+    CANCELLED = "CANCELLED"
+    HEARTBEAT_TIMEOUT = "HEARTBEAT_TIMEOUT"
+    TIMEOUT = "TIMEOUT"

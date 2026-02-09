@@ -9,6 +9,13 @@ main.py — Dispatcher 入口 (Phase 1 集成)
 
 用法:
     python -m dispatcher.main --prd docs/prd/agent-os-v4-dev.md
+
+T-AGENT-05: 心跳模块集成说明:
+    PowerShell 心跳模块 (.agent/dispatcher/CodexHeartbeat.psm1) 可作为
+    可选组件与 Python Dispatcher 配合使用。
+    - PM (Antigravity Agent) 通过 PowerShell 调用 Start-CodexTask/Wait-CodexTask
+    - Python Dispatcher 则通过 Worker 类直接管理子进程
+    - 两种模式互补，根据环境选择
 """
 
 from __future__ import annotations

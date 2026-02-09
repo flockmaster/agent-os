@@ -412,10 +412,38 @@ Write-Host "✅ 任务完成，修改文件: $($result.filesChanged -join ', ')"
 
 ## 📌 下一步行动
 
-1. **验证可行性**：测试 `codex exec --daemon` 是否支持后台运行
-2. **实现 MVP**：先实现状态文件机制的最小可用版本
-3. **集成到 Dispatcher**：更新 `codex-dispatch.md` 工作流
-4. **文档更新**：补充心跳监控的使用说明
+1. ~~**验证可行性**：测试 `codex exec --daemon` 是否支持后台运行~~ ✅ 不支持 daemon，改用 Start-Job
+2. ~~**实现 MVP**：先实现状态文件机制的最小可用版本~~ ✅ CodexHeartbeat.psm1 v2.1
+3. ~~**集成到 Dispatcher**：更新 `codex-dispatch.md` 工作流~~ ✅ T-AGENT-01 完成
+4. ~~**文档更新**：补充心跳监控的使用说明~~ ✅ 本文档已更新
+
+---
+
+## ✅ 实现结果 (2026-02-10)
+
+### 方案 A 已实现
+
+最终采用 **Start-Job + ChildJobs Output Count** 方案：
+
+| 组件 | 实现 | 状态 |
+|------|------|------|
+| `CodexHeartbeat.psm1` | `.agent/dispatcher/CodexHeartbeat.psm1` (v2.1) | ✅ 4/4 测试通过 |
+| `Test-Heartbeat.ps1` | `.codex/heartbeat/Test-Heartbeat.ps1` | ✅ 验证完毕 |
+| Dispatcher 集成 | `.agent/workflows/codex-dispatch.md` Step 5/6 | ✅ 已更新 |
+| 配置注册 | `.agent/config/agent_config.md` heartbeat 节 | ✅ 已注册 |
+
+### 关键技术决策
+
+1. **弃用 daemon / Start-Process**: Codex CLI 不支持 `--daemon`，`Start-Process` 无法可靠追踪
+2. **采用 Start-Job**: PowerShell 后台作业，内置状态管理和输出捕获
+3. **心跳检测方式**: `$job.ChildJobs[0].Output.Count` 精准检测活动（非 HasMoreData）
+4. **Sandbox 模式**: 默认 `danger-full-access` 解决只读问题 (T-HB-01)
+
+### 已知限制
+
+- Codex sandbox 即使设为 `danger-full-access`，某些环境下仍可能有限制
+- `Start-Job` 不跨 PowerShell 进程持久化；窗口关闭后 Job 丢失
+- 仅 PowerShell 实现，macOS/Linux 用户需等待 bash 版本 (T-HB-06)
 
 ---
 

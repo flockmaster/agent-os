@@ -120,6 +120,21 @@ updated: 2026-02-09
 | Last Checkpoint | checkpoint-xxx | X min ago |
 
 ---
-*Dashboard generated at: {timestamp}*
+## 💓 Heartbeat Status (T-AGENT-03)
+
+> 如果 Codex CLI 可用且心跳模块已加载，显示以下板块：
+
+| TaskId | Status | JobId | Elapsed | Progress |
+|--------|--------|-------|---------|----------|
+| T-002 | RUNNING | 5 | 00:03:45 | Running... (output: 1024 bytes) |
+| T-003 | DONE | 3 | 00:12:30 | DONE - last message written |
+
+**模块状态**: ✅ 已加载 (`Import-Module .agent/dispatcher/CodexHeartbeat.psm1`)
+**Task Dir**: `.agent/memory/heartbeat_tasks/`
+**Log Dir**: `.agent/memory/heartbeat_logs/`
+
+生成方式: `Get-CodexTasks | Format-Table`
+
+---*Dashboard generated at: {timestamp}*
 *Antigravity Agent OS v4.0*
 ```
