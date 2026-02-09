@@ -261,7 +261,54 @@ if (Test-Path $gitignorePath) {
     Set-Content -Path $gitignorePath -Value $agentIgnoreBlock.TrimStart() -Encoding UTF8
     Write-Ok "宸插垱寤?.gitignore"
 }
-
+# 4.7 安装 Git Hooks
+$gitDir = Join-Path $TargetDir ".git"
+if (Test-Path $gitDir) {
+    Write-Info "检测到 Git 仓库，正在安装 Git Hooks..."
+    $hookInstaller = Join-Path $agentDst "guards" "install_hooks.py"
+    if (Test-Path $hookInstaller) {
+        $pythonCmd = $null
+        # 尝试检测 Python
+        foreach ($cmd in @("python3", "python", "py")) {
+            try {
+                $null = Get-Command $cmd -ErrorAction Stop
+                $pythonCmd = $cmd
+                break
+            } catch { }
+        }
+        if ($pythonCmd) {
+            Push-Location $TargetDir
+            try {
+                & $pythonCmd $hookInstaller 2>&1 | ForEach-Object { Write-Host "   $_" }
+                # 验证安装结果 (T-HOOK-03)
+                $hooksInstalled = $true
+                foreach ($hookName in @("pre-commit", "post-commit")) {
+                    $hookPath = Join-Path $gitDir "hooks" $hookName
+                    if (-not (Test-Path $hookPath)) {
+                        Write-Warn "Hook '$hookName' 未成功安装到 .git/hooks/"
+                        $hooksInstalled = $false
+                    }
+                }
+                if ($hooksInstalled) {
+                    Write-Ok "Git Hooks 全部安装成功 (pre-commit, post-commit)"
+                }
+            } catch {
+                Write-Warn "Git Hooks 安装失败: $_"
+                Write-Info "你可以稍后手动执行: $pythonCmd $hookInstaller"
+            } finally {
+                Pop-Location
+            }
+        } else {
+            Write-Warn "未检测到 Python，跳过 Git Hooks 自动安装"
+            Write-Info "请安装 Python 后手动执行: python .agent/guards/install_hooks.py"
+        }
+    } else {
+        Write-Warn "install_hooks.py 不存在: $hookInstaller"
+    }
+} else {
+    Write-Info "未检测到 .git 目录，跳过 Git Hooks 安装"
+    Write-Info "初始化 Git 后可手动执行: python .agent/guards/install_hooks.py"
+}
 # ============================================================
 # Step 5: 瀹夎鍏ㄥ眬閰嶇疆
 # ============================================================

@@ -4,9 +4,21 @@
 #
 # 功能: 提交后自动创建 checkpoint tag（如果距上次 > 30 分钟）
 # 行为: 静默模式，自动创建 tag，失败不阻断
-# 安装: cp .agent/guards/post-commit .git/hooks/post-commit
-#        chmod +x .git/hooks/post-commit
+# 安装: python .agent/guards/install_hooks.py
 # ============================================================
+
+# ── T-HOOK-04: Windows 环境自动委托 .ps1 版本（如有）──
+if [ -n "$WINDIR" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "$0")/../../.agent/guards" 2>/dev/null && pwd)"
+    PS1_HOOK="$SCRIPT_DIR/post-commit.ps1"
+    if [ -f "$PS1_HOOK" ]; then
+        for _cmd in pwsh powershell; do
+            if command -v "$_cmd" >/dev/null 2>&1; then
+                exec "$_cmd" -NoProfile -ExecutionPolicy Bypass -File "$PS1_HOOK"
+            fi
+        done
+    fi
+fi
 
 GUARD_NAME="Antigravity Guard"
 CHECKPOINT_INTERVAL=1800  # 30 分钟 = 1800 秒

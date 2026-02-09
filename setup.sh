@@ -251,6 +251,43 @@ else
     ok "已创建 .gitignore"
 fi
 
+# 4.7 安装 Git Hooks
+if [ -d "$TARGET_DIR/.git" ]; then
+    info "检测到 Git 仓库，正在安装 Git Hooks..."
+    HOOK_INSTALLER="$AGENT_DST/guards/install_hooks.py"
+    if [ -f "$HOOK_INSTALLER" ]; then
+        PYTHON_CMD=""
+        for cmd in python3 python; do
+            if command -v "$cmd" &>/dev/null; then
+                PYTHON_CMD="$cmd"
+                break
+            fi
+        done
+        if [ -n "$PYTHON_CMD" ]; then
+            (cd "$TARGET_DIR" && "$PYTHON_CMD" "$HOOK_INSTALLER" 2>&1 | while IFS= read -r line; do echo "   $line"; done)
+            # 验证安装结果 (T-HOOK-03)
+            HOOKS_OK=true
+            for hook_name in pre-commit post-commit; do
+                if [ ! -f "$TARGET_DIR/.git/hooks/$hook_name" ]; then
+                    warn "Hook '$hook_name' 未成功安装到 .git/hooks/"
+                    HOOKS_OK=false
+                fi
+            done
+            if [ "$HOOKS_OK" = true ]; then
+                ok "Git Hooks 全部安装成功 (pre-commit, post-commit)"
+            fi
+        else
+            warn "未检测到 Python，跳过 Git Hooks 自动安装"
+            info "请安装 Python 后手动执行: python .agent/guards/install_hooks.py"
+        fi
+    else
+        warn "install_hooks.py 不存在: $HOOK_INSTALLER"
+    fi
+else
+    info "未检测到 .git 目录，跳过 Git Hooks 安装"
+    info "初始化 Git 后可手动执行: python .agent/guards/install_hooks.py"
+fi
+
 # ============================================================
 # Step 5: 安装全局配置
 # ============================================================

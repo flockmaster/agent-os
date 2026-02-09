@@ -4,9 +4,22 @@
 #
 # 功能: 检查 active_context.md 是否在本次提交中被更新
 # 行为: 警告模式 (warning-only)，不阻断 commit
-# 安装: cp .agent/guards/pre-commit .git/hooks/pre-commit
-#        chmod +x .git/hooks/pre-commit
+# 安装: python .agent/guards/install_hooks.py
 # ============================================================
+
+# ── T-HOOK-04: Windows 环境自动委托 .ps1 版本 ──
+if [ -n "$WINDIR" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "$0")/../../.agent/guards" 2>/dev/null && pwd)"
+    PS1_HOOK="$SCRIPT_DIR/pre-commit.ps1"
+    if [ -f "$PS1_HOOK" ]; then
+        for _cmd in pwsh powershell; do
+            if command -v "$_cmd" >/dev/null 2>&1; then
+                exec "$_cmd" -NoProfile -ExecutionPolicy Bypass -File "$PS1_HOOK"
+            fi
+        done
+    fi
+    # PowerShell 不可用时，继续用 bash 版本
+fi
 
 CONTEXT_FILE="active_context.md"
 GUARD_NAME="Antigravity Guard"
