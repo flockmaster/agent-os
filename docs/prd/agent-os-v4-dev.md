@@ -55,13 +55,13 @@ Antigravity Agent OS v3.0 已建立完整的四层架构：
 
 | ID | 任务 | 状态 | 描述 | 预估 | 依赖 | 验收标准 |
 |----|------|------|------|-----|------|---------|
-| T-101 | **Worker 封装器 (core)** | ⏳ PENDING | 封装 `codex exec --json --full-auto` 调用，支持 JSONL 事件流解析、超时控制 (10/15/20 min)、进程生命周期管理 | 3h | - | 单元测试: 启动 Mock Worker，解析 JSONL，超时终止 |
-| T-102 | **JSONL 事件解析器** | ⏳ PENDING | 解析 `agent_message`/`tool_call`/`tool_result`/`error`/`session_end` 五类事件，提取结构化信息 | 2h | T-101 | 单元测试: 解析样本 JSONL 文件，正确提取各事件类型 |
-| T-103 | **重启注入机制** | ⏳ PENDING | 检测 Worker 提问 → 终止进程 → 追加答案到 Prompt → 重启。同一任务最多 3 次重启 | 3h | T-101, T-102 | 集成测试: Mock Worker 提问 → PM 注入答案 → Worker 继续执行 |
-| T-104 | **PM 自主决策引擎** | ⏳ PENDING | 语义分析 Worker 提问，按规则判断: 技术细节自行决定 / 需求歧义标记 BLOCKED | 2h | T-103 | 测试: 10 个样本问题，正确分类率 ≥ 80% |
-| T-105 | **Git 自动提交集成** | ⏳ PENDING | 每个任务 DONE 后自动 `git add -A && git commit -m "feat(T-{ID}): {name}"`。失败时记录日志但不阻塞 | 1h | T-101 | 测试: 任务完成后 Git 历史中有对应 commit |
-| T-106 | **PRD 状态回写** | ⏳ PENDING | 任务完成后自动将 PRD 中对应行从 `⏳ PENDING` 更新为 `✅ DONE` | 1.5h | T-101 | 测试: 执行一个任务后，PRD 文件被正确更新 |
-| T-107 | **端到端集成测试** | ⏳ PENDING | 编写 Mini PRD (3 任务)，验证完整流程: 解析 → 调度 → 执行 → 提交 → 状态回写 | 3h | T-101 ~ T-106 | E2E: Mini PRD 全部任务完成，Git 历史正确 |
+| T-101 | **Worker 封装器 (core)** | ✅ DONE | 封装 `codex exec --json --full-auto` 调用，支持 JSONL 事件流解析、超时控制 (10/15/20 min)、进程生命周期管理 | 3h | - | 单元测试: 启动 Mock Worker，解析 JSONL，超时终止 |
+| T-102 | **JSONL 事件解析器** | ✅ DONE | 解析 `agent_message`/`tool_call`/`tool_result`/`error`/`session_end` 五类事件，提取结构化信息 | 2h | T-101 | 单元测试: 解析样本 JSONL 文件，正确提取各事件类型 |
+| T-103 | **重启注入机制** | ✅ DONE | 检测 Worker 提问 → 终止进程 → 追加答案到 Prompt → 重启。同一任务最多 3 次重启 | 3h | T-101, T-102 | 集成测试: Mock Worker 提问 → PM 注入答案 → Worker 继续执行 |
+| T-104 | **PM 自主决策引擎** | ✅ DONE | 语义分析 Worker 提问，按规则判断: 技术细节自行决定 / 需求歧义标记 BLOCKED | 2h | T-103 | 测试: 10 个样本问题，正确分类率 ≥ 80% |
+| T-105 | **Git 自动提交集成** | ✅ DONE | 每个任务 DONE 后自动 `git add -A && git commit -m "feat(T-{ID}): {name}"`。失败时记录日志但不阻塞 | 1h | T-101 | 测试: 任务完成后 Git 历史中有对应 commit |
+| T-106 | **PRD 状态回写** | ✅ DONE | 任务完成后自动将 PRD 中对应行从 `⏳ PENDING` 更新为 `✅ DONE` | 1.5h | T-101 | 测试: 执行一个任务后，PRD 文件被正确更新 |
+| T-107 | **端到端集成测试** | ✅ DONE | 编写 Mini PRD (3 任务)，验证完整流程: 解析 → 调度 → 执行 → 提交 → 状态回写 | 3h | T-101 ~ T-106 | E2E: Mini PRD 全部任务完成，Git 历史正确 |
 
 **Phase 1 交付物**:
 ```
