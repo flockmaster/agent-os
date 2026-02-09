@@ -127,15 +127,15 @@ Antigravity Agent OS v3.0 已建立完整的四层架构：
 
 | ID | 任务 | 状态 | 描述 | 预估 | 依赖 | 验收标准 |
 |----|------|------|------|-----|------|---------|
-| T-301 | **Pre-commit 守卫** | ⏳ PENDING | Git pre-commit hook: 检查 `active_context.md` 是否在本次提交中被更新；若未更新则警告 (非阻断) | 1.5h | - | 提交代码时，若未更新 active_context 则输出警告 |
-| T-302 | **Post-commit 守卫** | ⏳ PENDING | Git post-commit hook: 自动创建 checkpoint tag (如果上一个 checkpoint 超过 30 分钟) | 1h | T-301 | 提交代码后，自动生成 `checkpoint-*` tag |
-| T-303 | **Session 看门狗** | ⏳ PENDING | 轻量 Python 脚本: 监控 `.agent/memory/active_context.md` 的最后修改时间，超过 30 分钟未更新则在终端提醒 | 2h | - | 启动看门狗后，30 分钟无更新触发提醒 |
-| T-304 | **配置抽象层** | ⏳ PENDING | 创建 `.agent/config/agent_config.md` 统一配置模板，支持 `model_provider` / `global_config_path` / `api_style` 变量 | 2h | - | 配置文件存在且定义了 3 种模型后端 |
-| T-305 | **Gemini 适配器** | ⏳ PENDING | 将现有 `GEMINI.md` 逻辑迁移为 Gemini 适配器模板，保持完全向后兼容 | 1.5h | T-304 | 使用 Gemini 配置时行为与 v3.0 完全一致 |
-| T-306 | **Claude 适配器** | ⏳ PENDING | 创建 `.claude/CLAUDE.md` 适配器: 将 router.rule 中的 Gemini 特定 API 名称映射为 Claude 对应操作 | 2h | T-304 | Claude 用户复制 `.agent/` + `.claude/` 后可使用基础功能 |
-| T-307 | **GPT 适配器** | ⏳ PENDING | 创建 `.copilot/copilot-instructions.md` 适配器: 适配 Copilot/GPT 系列 | 2h | T-304 | GPT 用户复制 `.agent/` + `.copilot/` 后可使用基础功能 |
-| T-308 | **`/status` 仪表盘增强** | ⏳ PENDING | 输出结构化 Markdown: 任务进度条 + 知识库统计 + 最近 5 条反思摘要 + 工作流指标趋势 | 2h | T-208 | 执行 `/status` 输出完整仪表盘，含所有区块 |
-| T-309 | **全系统回归测试** | ⏳ PENDING | 分别在 Gemini / Claude / GPT 环境中执行 Mini PRD，验证端到端流程 | 3h | T-305 ~ T-307 | 3 个模型环境均通过 E2E 测试 |
+| T-301 | **Pre-commit 守卫** | ✅ DONE | Git pre-commit hook: 检查 `active_context.md` 是否在本次提交中被更新；若未更新则警告 (非阻断) | 1.5h | - | 提交代码时，若未更新 active_context 则输出警告 |
+| T-302 | **Post-commit 守卫** | ✅ DONE | Git post-commit hook: 自动创建 checkpoint tag (如果上一个 checkpoint 超过 30 分钟) | 1h | T-301 | 提交代码后，自动生成 `checkpoint-*` tag |
+| T-303 | **Session 看门狗** | ✅ DONE | 轻量 Python 脚本: 监控 `.agent/memory/active_context.md` 的最后修改时间，超过 30 分钟未更新则在终端提醒 | 2h | - | 启动看门狗后，30 分钟无更新触发提醒 |
+| T-304 | **配置抽象层** | ✅ DONE | 创建 `.agent/config/agent_config.md` 统一配置模板，支持 `model_provider` / `global_config_path` / `api_style` 变量 | 2h | - | 配置文件存在且定义了 3 种模型后端 |
+| T-305 | **Gemini 适配器** | ✅ DONE | 将现有 `GEMINI.md` 逻辑迁移为 Gemini 适配器模板，保持完全向后兼容 | 1.5h | T-304 | 使用 Gemini 配置时行为与 v3.0 完全一致 |
+| T-306 | **Claude 适配器** | ✅ DONE | 创建 `.claude/CLAUDE.md` 适配器: 将 router.rule 中的 Gemini 特定 API 名称映射为 Claude 对应操作 | 2h | T-304 | Claude 用户复制 `.agent/` + `.claude/` 后可使用基础功能 |
+| T-307 | **GPT 适配器** | ✅ DONE | 创建 `.copilot/copilot-instructions.md` 适配器: 适配 Copilot/GPT 系列 | 2h | T-304 | GPT 用户复制 `.agent/` + `.copilot/` 后可使用基础功能 |
+| T-308 | **`/status` 仪表盘增强** | ✅ DONE | 输出结构化 Markdown: 任务进度条 + 知识库统计 + 最近 5 条反思摘要 + 工作流指标趋势 | 2h | T-208 | 执行 `/status` 输出完整仪表盘，含所有区块 |
+| T-309 | **全系统回归测试** | ✅ DONE | 分别在 Gemini / Claude / GPT 环境中执行 Mini PRD，验证端到端流程 | 3h | T-305 ~ T-307 | 3 个模型环境均通过 E2E 测试 |
 
 **Phase 3 交付物**:
 ```
