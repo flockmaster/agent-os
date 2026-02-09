@@ -263,41 +263,20 @@ PM 实时解析 Worker 的 stdout JSONL 事件流：
 
 ### 7.3 PM 事件处理流程
 
-```python
-# 伪代码
-process = subprocess.Popen(
-    ["codex", "exec", "--json", "--full-auto", prompt],
-    stdout=subprocess.PIPE
-)
+> **v3.0 更新**: 以下流程由 Agent 的自然语言理解能力驱动，无需编写代码实现。
 
-for line in process.stdout:
-    event = json.loads(line)
-    
-    match event["type"]:
-        case "agent_message":
-            content = event["content"]
-            # 检查是否包含提问语义
-            if is_question(content):
-                if pm_can_answer(content):
-                    process.terminate()
-                    new_prompt = original_prompt + f"\n\n[补充] {answer}"
-                    restart_worker(new_prompt)
-                else:
-                    mark_blocked(task_id, content)
-                    skip_to_next_task()
-        
-        case "error":
-            if retry_count < 3:
-                mark_retry(task_id)
-            else:
-                mark_failed(task_id)
-        
-        case "session_end":
-            if event["success"]:
-                mark_done(task_id)
-                update_prd_status(task_id, "✅ DONE")
-            schedule_next_task()
-```
+PM (Agent) 实时监控 Worker 输出，按以下逻辑响应：
+
+1. **接收事件**: Agent 读取 Worker 的 JSONL 输出
+2. **识别提问**: 如果 `agent_message` 包含疑问句或选择请求：
+   - Agent 能回答 → 终止 Worker，将答案注入 Prompt，重启
+   - Agent 不确定 → 标记 BLOCKED，跳到下一个任务
+3. **处理错误**: 如果收到 `error` 事件：
+   - 重试次数 < 3 → 标记 RETRY
+   - 重试次数 ≥ 3 → 标记 FAILED
+4. **任务完成**: 如果收到 `session_end` 且成功：
+   - 更新 PRD 状态为 ✅ DONE
+   - 调度下一个任务
 
 ### 7.4 问题识别策略
 
