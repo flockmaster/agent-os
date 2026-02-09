@@ -1,9 +1,11 @@
 ---
+id: k-005
 title: Agent Native Orchestration (纯 Agent 编排)
-type: conceptual-pattern
+category: architecture
 tags: [architecture, orchestration, anti-pattern]
 created: 2026-02-09
-source: user-feedback
+confidence: 0.9
+references: [user-feedback]
 ---
 
 # Agent Native Orchestration

@@ -92,14 +92,14 @@ Antigravity Agent OS v3.0 已建立完整的四层架构：
 
 | ID | 任务 | 状态 | 描述 | 预估 | 依赖 | 验收标准 |
 |----|------|------|------|-----|------|---------|
-| T-201 | **知识收割器实现** | ⏳ PENDING | 在 SKILL.md 中细化提取规则；任务完成后分析代码变更 + 对话上下文，生成知识条目 (Markdown + YAML Frontmatter) | 3h | - | 手动触发: 给定一段对话记录，生成符合模板的知识条目 |
-| T-202 | **知识索引系统** | ⏳ PENDING | 实现 `knowledge_base.md` 的 CRUD: 添加条目 → 更新索引表 → 更新分类统计 → 更新标签云 | 2h | T-201 | 添加 3 条知识后，索引表/分类/标签均正确更新 |
-| T-203 | **种子知识包** | ⏳ PENDING | 编写 20 条通用开发最佳实践 (Flutter 10 条 + Dart 5 条 + 工程规范 5 条)，预填入 `knowledge/` | 3h | T-202 | 知识库初始含 20+ 条 active 条目，覆盖 5 个 category |
-| T-204 | **Confidence 衰减引擎** | ⏳ PENDING | 实现 Confidence 分数更新: 验证 +0.1 / 引用 +0.05 / 误导 -0.2 / 30 天未用 -0.1 / < 0.5 标记 deprecated | 2h | T-202 | 单元测试: 模拟各触发事件，Confidence 正确计算 |
-| T-205 | **反思工作流实现** | ⏳ PENDING | `workflows/reflect.md` 的落地: 读取任务完成情况 → 生成 WWW/WCI/Learnings/Action Items → 追加到 `reflection_log.md` | 2h | T-201 | 执行 `/reflect` 后，反思日志新增一条完整记录 |
-| T-206 | **模式检测器 MVP** | ⏳ PENDING | 代码提交后扫描 `git diff`，与 `pattern_library.md` 匹配；出现 ≥ 3 次的结构自动提升为 ACTIVE 模式 | 3h | T-202 | 手动提交含重复模式的代码后，模式库新增条目 |
-| T-207 | **学习队列处理器** | ⏳ PENDING | 实现 `learning_queue.md` 的完整生命周期: 入队 → 按优先级处理 → 输出知识/模式 → 标记已处理 → 7 天后清理 | 2h | T-201, T-206 | 队列有 3 条素材时，`/evolve` 全部处理完毕 |
-| T-208 | **工作流指标追踪** | ⏳ PENDING | 在 feature-flow / analyze-error / start 的关键节点插入计时器，完成后写入 `workflow_metrics.md` | 2h | - | 执行 feature-flow 后，指标表新增一行记录 |
+| T-201 | **知识收割器实现** | ✅ DONE | 在 SKILL.md 中细化提取规则；任务完成后分析代码变更 + 对话上下文，生成知识条目 (Markdown + YAML Frontmatter) | 3h | - | 手动触发: 给定一段对话记录，生成符合模板的知识条目 |
+| T-202 | **知识索引系统** | ✅ DONE | 实现 `knowledge_base.md` 的 CRUD: 添加条目 → 更新索引表 → 更新分类统计 → 更新标签云 | 2h | T-201 | 添加 3 条知识后，索引表/分类/标签均正确更新 |
+| T-203 | **种子知识包** | ✅ DONE | 编写 20 条通用开发最佳实践 (Flutter 10 条 + Dart 5 条 + 工程规范 5 条)，预填入 `knowledge/` | 3h | T-202 | 知识库初始含 20+ 条 active 条目，覆盖 5 个 category |
+| T-204 | **Confidence 衰减引擎** | ✅ DONE | 实现 Confidence 分数更新: 验证 +0.1 / 引用 +0.05 / 误导 -0.2 / 30 天未用 -0.1 / < 0.5 标记 deprecated | 2h | T-202 | 单元测试: 模拟各触发事件，Confidence 正确计算 |
+| T-205 | **反思工作流实现** | ✅ DONE | `workflows/reflect.md` 的落地: 读取任务完成情况 → 生成 WWW/WCI/Learnings/Action Items → 追加到 `reflection_log.md` | 2h | T-201 | 执行 `/reflect` 后，反思日志新增一条完整记录 |
+| T-206 | **模式检测器 MVP** | ✅ DONE | 代码提交后扫描 `git diff`，与 `pattern_library.md` 匹配；出现 ≥ 3 次的结构自动提升为 ACTIVE 模式 | 3h | T-202 | 手动提交含重复模式的代码后，模式库新增条目 |
+| T-207 | **学习队列处理器** | ✅ DONE | 实现 `learning_queue.md` 的完整生命周期: 入队 → 按优先级处理 → 输出知识/模式 → 标记已处理 → 7 天后清理 | 2h | T-201, T-206 | 队列有 3 条素材时，`/evolve` 全部处理完毕 |
+| T-208 | **工作流指标追踪** | ✅ DONE | 在 feature-flow / analyze-error / start 的关键节点插入计时器，完成后写入 `workflow_metrics.md` | 2h | - | 执行 feature-flow 后，指标表新增一行记录 |
 
 **Phase 2 交付物**:
 ```

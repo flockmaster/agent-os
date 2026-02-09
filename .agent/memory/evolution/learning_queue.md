@@ -1,7 +1,7 @@
 ---
 description: 待学习队列 - 记录待提取和处理的学习素材
 version: 1.0
-last_updated: 2026-02-08
+last_updated: 2026-02-09
 ---
 
 # Learning Queue (待学习队列)
@@ -12,7 +12,7 @@ last_updated: 2026-02-08
 
 | Metric | Value |
 |--------|-------|
-| 待处理 | 0 |
+| 待处理 | 1 |
 | 处理中 | 0 |
 | 今日已处理 | 0 |
 
@@ -20,7 +20,7 @@ last_updated: 2026-02-08
 
 | ID | Source Type | Source ID | Priority | Created | Status |
 |----|-------------|-----------|----------|---------|--------|
-| - | - | - | - | - | 队列为空 |
+| LQ-001 | code_change | T-201 | P2 | 2026-02-09 | pending |
 
 ### Source Types
 - `conversation`: 对话记录
@@ -48,15 +48,9 @@ last_updated: 2026-02-08
 
 ### 3.3 处理流程
 ```
-1. 取出队列头部素材
-2. 分析素材内容
-3. 提取知识/模式
-4. 更新 knowledge_base.md / pattern_library.md
-5. 标记素材为已处理
+1. 按优先级排序 (P0 > P1 > P2 > P3)
+2. 逐条分析素材内容
+3. 提取知识条目或代码模式
+4. 标记为已处理
+5. 7 天后自动清理已处理条目
 ```
-
-## 4. 已处理历史 (Processed History)
-
-| Date | Source Type | Source ID | Output | Notes |
-|------|-------------|-----------|--------|-------|
-| - | - | - | - | 暂无历史 |
