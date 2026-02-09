@@ -28,7 +28,7 @@ Write-Host ""
 # ============================================================
 # Step 1: 选择目标项目
 # ============================================================
-Write-Step "Step 1/5 — 设置目标项目"
+Write-Step "Step 1/6 — 设置目标项目"
 
 if ($TargetDir -eq "") {
     Write-Host "   请输入你的项目路径 (留空 = 当前目录): " -NoNewline -ForegroundColor Yellow
@@ -56,7 +56,7 @@ if (Test-Path "$TargetDir\.agent\memory\active_context.md") {
 # ============================================================
 # Step 2: 项目信息
 # ============================================================
-Write-Step "Step 2/5 — 项目信息"
+Write-Step "Step 2/6 — 项目信息"
 
 Write-Host "   项目名称: " -NoNewline -ForegroundColor Yellow
 $ProjectName = Read-Host
@@ -99,7 +99,7 @@ Write-Ok "项目: $ProjectName | $($stack.sdk) / $($stack.lang) / $($stack.arch)
 # ============================================================
 # Step 3: 选择 AI 工具
 # ============================================================
-Write-Step "Step 3/5 — 选择你的 AI 编程工具"
+Write-Step "Step 3/6 — 选择你的 AI 编程工具"
 
 Write-Host "     [1] Gemini (Google AI / Android Studio)"
 Write-Host "     [2] GitHub Copilot (VS Code / JetBrains)"
@@ -120,7 +120,7 @@ Write-Ok "AI 工具: $($provider.display)"
 # ============================================================
 # Step 4: 复制文件并初始化
 # ============================================================
-Write-Step "Step 4/5 — 安装 Agent OS 到项目"
+Write-Step "Step 4/6 — 安装 Agent OS 到项目"
 
 # 4.1 复制 .agent/ 目录
 $agentSrc = Join-Path $ScriptDir ".agent"
@@ -245,7 +245,7 @@ if (Test-Path $gitignorePath) {
 # ============================================================
 # Step 5: 安装全局配置
 # ============================================================
-Write-Step "Step 5/5 — 安装 AI 全局配置"
+Write-Step "Step 5/6 — 安装 AI 全局配置"
 
 $adapterSrc = Join-Path $agentDst $provider.adapter
 $globalDirExpanded = $ExecutionContext.InvokeCommand.ExpandString($provider.globalDir)
@@ -273,6 +273,22 @@ if ($installGlobal -eq "" -or $installGlobal -eq "y" -or $installGlobal -eq "Y")
 }
 
 # ============================================================
+# Step 6 (可选): 检测 Codex CLI (Dispatcher 功能)
+# ============================================================
+Write-Step "Step 6 (可选) — 检测 Codex CLI (任务调度器)"
+
+$codexAvailable = $false
+try {
+    $null = Get-Command "codex" -ErrorAction Stop
+    $codexAvailable = $true
+    Write-Ok "Codex CLI 已安装，Dispatcher 可用"
+} catch {
+    Write-Info "Codex CLI 未安装 — Dispatcher 调度功能不可用"
+    Write-Info "安装方法: npm install -g @openai/codex"
+    Write-Info "安装后就能用 Antigravity 作为 PM 调度 Codex 执行大型 PRD"
+}
+
+# ============================================================
 # 完成！
 # ============================================================
 Write-Host ""
@@ -283,6 +299,11 @@ Write-Host ""
 Write-Host "   📂 项目: $ProjectName" -ForegroundColor White
 Write-Host "   🔧 技术栈: $($stack.sdk) / $($stack.lang)" -ForegroundColor White
 Write-Host "   🤖 AI 工具: $($provider.display)" -ForegroundColor White
+if ($codexAvailable) {
+    Write-Host "   🎯 Dispatcher: ✅ 可用" -ForegroundColor White
+} else {
+    Write-Host "   🎯 Dispatcher: ⚠️ 需安装 Codex CLI" -ForegroundColor Yellow
+}
 Write-Host ""
 Write-Host "   👉 下一步:" -ForegroundColor Cyan
 Write-Host "      1. 在 IDE 中打开项目" -ForegroundColor White

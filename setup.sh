@@ -35,7 +35,7 @@ echo ""
 # ============================================================
 # Step 1: 选择目标项目
 # ============================================================
-step "Step 1/5 — 设置目标项目"
+step "Step 1/6 — 设置目标项目"
 
 if [ -z "$TARGET_DIR" ]; then
     prompt "请输入你的项目路径 (留空 = 当前目录): "
@@ -56,7 +56,7 @@ fi
 # ============================================================
 # Step 2: 项目信息
 # ============================================================
-step "Step 2/5 — 项目信息"
+step "Step 2/6 — 项目信息"
 
 prompt "项目名称: "
 read -r PROJECT_NAME
@@ -94,7 +94,7 @@ ok "项目: $PROJECT_NAME | $SDK / $LANG / $ARCH"
 # ============================================================
 # Step 3: 选择 AI 工具
 # ============================================================
-step "Step 3/5 — 选择你的 AI 编程工具"
+step "Step 3/6 — 选择你的 AI 编程工具"
 
 echo "     [1] Gemini (Google AI / Android Studio)"
 echo "     [2] GitHub Copilot (VS Code / JetBrains)"
@@ -114,7 +114,7 @@ ok "AI 工具: $DISPLAY"
 # ============================================================
 # Step 4: 复制文件并初始化
 # ============================================================
-step "Step 4/5 — 安装 Agent OS 到项目"
+step "Step 4/6 — 安装 Agent OS 到项目"
 
 AGENT_SRC="$SCRIPT_DIR/.agent"
 AGENT_DST="$TARGET_DIR/.agent"
@@ -233,7 +233,7 @@ fi
 # ============================================================
 # Step 5: 安装全局配置
 # ============================================================
-step "Step 5/5 — 安装 AI 全局配置"
+step "Step 5/6 — 安装 AI 全局配置"
 
 ADAPTER_SRC="$AGENT_DST/$ADAPTER"
 GLOBAL_PATH="$GLOBAL_DIR/$GLOBAL_FILE"
@@ -258,6 +258,21 @@ else
 fi
 
 # ============================================================
+# Step 6 (可选): 检测 Codex CLI
+# ============================================================
+step "Step 6 (可选) — 检测 Codex CLI (任务调度器)"
+
+CODEX_AVAILABLE=false
+if command -v codex &>/dev/null; then
+    CODEX_AVAILABLE=true
+    ok "Codex CLI 已安装，Dispatcher 可用"
+else
+    info "Codex CLI 未安装 — Dispatcher 调度功能不可用"
+    info "安装方法: npm install -g @openai/codex"
+    info "安装后就能用 Antigravity 作为 PM 调度 Codex 执行大型 PRD"
+fi
+
+# ============================================================
 # 完成！
 # ============================================================
 echo ""
@@ -268,6 +283,11 @@ echo ""
 echo -e "   📂 项目: ${NC}$PROJECT_NAME"
 echo -e "   🔧 技术栈: ${NC}$SDK / $LANG"
 echo -e "   🤖 AI 工具: ${NC}$DISPLAY"
+if [ "$CODEX_AVAILABLE" = true ]; then
+    echo -e "   🎯 Dispatcher: ${GREEN}✅ 可用${NC}"
+else
+    echo -e "   🎯 Dispatcher: ${YELLOW}⚠️ 需安装 Codex CLI${NC}"
+fi
 echo ""
 echo -e "   ${CYAN}👉 下一步:${NC}"
 echo "      1. 在 IDE 中打开项目"

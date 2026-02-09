@@ -10,6 +10,7 @@
 
 <br/>
 
+[![Dispatcher v3.0](https://img.shields.io/badge/🎯_任务调度-v3.0-ff6b35?style=for-the-badge)](docs/prd/codex-dispatcher-user.md)
 [![Evolution Engine v1.0](https://img.shields.io/badge/🧬_进化引擎-v1.0-blueviolet?style=for-the-badge)](docs/prd/evolution-engine.md)
 [![Status](https://img.shields.io/badge/🟢_状态-可用-success?style=for-the-badge)](#-30-秒快速上手)
 [![Framework](https://img.shields.io/badge/🔌_适配-任意项目-blue?style=for-the-badge)](#-适配任何项目)
@@ -96,6 +97,7 @@ pwsh setup.ps1 -TargetDir "D:\your-project"
 | 让 AI 改完代码，它忘了 commit，你也忘了 | 🔥🔥🔥🔥 |
 | 同样的 bug 上周修过一次，今天 AI 又走了一遍弯路 | 🔥🔥🔥🔥🔥 |
 | 让 AI 写个功能，写一半停下来问"要继续吗？" | 🔥🔥🔥 |
+| PRD 拆了 20 个子任务，在一个窗口做完上下文必爆 | 🔥🔥🔥🔥🔥 |
 | AI 每次都像新来的实习生，你是永远的导师 | 🔥🔥🔥🔥🔥 |
 
 > **根本原因：AI Agent 没有记忆，没有流程，没有成长机制。**
@@ -152,6 +154,78 @@ AI 终于有了"长短期记忆"，不再每次从零开始。
 </td>
 </tr>
 </table>
+
+---
+
+## 🎯 杀手锏：任务调度器 (Dispatcher)
+
+> **解决最核心的痛点：大型 PRD 在单个对话窗口中上下文爆炸。**
+
+传统做法是在一个 AI 窗口里做完所有事——10 个子任务做到第 7 个时，AI 已经开始"幻觉"了。
+
+Antigravity 的方案：**PM + Worker 分离架构**。
+
+```
+┌─────────────────────────────────────────────────┐
+│                 你 (User)                        │
+│         "帮我实现这个 PRD"                        │
+└────────────────────┬────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────┐
+│            Antigravity (PM)                      │
+│                                                  │
+│  📄 读取 PRD → 拆解 20 个子任务                   │
+│  🧠 选择下一个 → 构造精准 Prompt                  │
+│  📡 派发给 Worker → 监控执行                      │
+│  🔧 Worker 有问题？PM 自主回答                    │
+│  ✅ 完成 → Git 提交 → 自动派发下一个               │
+└────────────┬────────────────────────────────────┘
+             │ 每个任务独立派发
+             ▼
+┌─────────────────────────────────────────────────┐
+│           Codex Worker (独立上下文)               │
+│                                                  │
+│  🆕 全新窗口 → 只知道当前任务                     │
+│  ✍️ 写代码 → 测试 → 汇报结果                     │
+│  🧹 执行完毕即销毁，零污染                        │
+└─────────────────────────────────────────────────┘
+```
+
+**为什么这很重要？**
+
+| 对比 | 传统单窗口 | PM + Worker |
+|------|:---------:|:-----------:|
+| 第 1 个任务 | 🟢 清醒 | 🟢 清醒 |
+| 第 5 个任务 | 🟡 开始模糊 | 🟢 全新上下文 |
+| 第 15 个任务 | 🔴 幻觉/遗忘 | 🟢 依然清醒 |
+| 总体质量 | 递减 | 恒定 |
+
+### 两种调度模式
+
+**模式 A：Agent 原生调度**（推荐）
+
+对 Antigravity 说"执行 PRD"，它会读取 `codex-dispatch.md` 工作流，用自然语言理解 PRD 结构并逐个派发：
+
+```
+你：执行 docs/prd/feature-x-dev.md
+AI：找到 10 个任务，T-001 已完成。
+    ▶ 启动 T-002... ✅ 完成，已提交 Git
+    ▶ 启动 T-003... Worker 提问："日志放哪？" → PM 自动回答 → ✅ 完成
+    ▶ 启动 T-004... ❌ 失败(3次) → 标记 BLOCKED，跳到 T-005
+    ...
+    🎉 8/10 任务完成，2 个 BLOCKED 待处理。
+```
+
+**模式 B：程序化调度**（大型项目 / CI 集成）
+
+```bash
+# 直接用命令行跑，适合 20+ 任务的大型 PRD
+python -m dispatcher.main --prd docs/prd/feature-x-dev.md
+
+# 先预览不执行
+python -m dispatcher.main --prd docs/prd/feature-x-dev.md --dry-run
+```
 
 ---
 
@@ -225,6 +299,21 @@ AI：检测到 NullPointerException...
 │   ├── 📂 evolution/               进化引擎数据
 │   └── 📂 knowledge/               AI 积累的知识库
 │
+├── 📂 dispatcher/               ← 🎯 任务调度器 (PM→Worker)
+│   ├── core.py                      数据结构 (TaskSpec/WorkerResult)
+│   ├── worker.py                    Codex CLI 封装器
+│   ├── restart_injector.py          重启注入机制 (问答传递)
+│   ├── decision_engine.py           PM 自主决策引擎
+│   ├── git_ops.py                   Git 自动提交
+│   ├── prd_updater.py               PRD 状态回写
+│   ├── main.py                      CLI 入口
+│   └── 📂 tests/                   85 个单元测试
+│
+├── 📂 adapters/                 ← 多模型适配器
+│   ├── gemini/                      Gemini 全局配置模板
+│   ├── copilot/                     Copilot 全局配置模板
+│   └── claude/                      Claude 全局配置模板
+│
 ├── 📂 rules/                    ← 行为规则
 │   └── router.rule                  任务分发路由
 │
@@ -234,6 +323,7 @@ AI：检测到 NullPointerException...
 │   └── prd-crafter/                 需求文档生成器
 │
 └── 📂 workflows/                ← 自动化流程
+    ├── codex-dispatch.md            🎯 调度器工作流 (Agent 原生)
     ├── feature-flow.md              功能开发全流程
     ├── evolve.md                    学习与进化
     └── reflect.md                   复盘与反思
@@ -272,6 +362,7 @@ Tech Stack: Flutter / Dart / MVVM    ← 改成你的技术栈就行
 | `/status` | 📊 看板 | 当前任务做到哪了 |
 | `/rollback` | ⏪ 后悔药 | 回到上一个安全版本 |
 | `/meta` | 🔧 改系统 | 修改 AI 自身的行为规则 |
+| `/dispatch` | 🎯 调度 | PM 模式：拆任务→派 Worker→逐个完成 |
 | `/export` | 📦 打包 | 导出干净的系统副本给别人 |
 
 ---
@@ -299,7 +390,8 @@ graph LR
 
 | 版本 | 里程碑 |
 |:---:|-------|
-| **v3.0** 🆕 | 接入自进化引擎：知识收割 + 模式库 + 自动反思 |
+| **v4.0** 🆕 | **Task Dispatcher**: PM→Worker 分离架构，上下文隔离，大型 PRD 无损执行 |
+| **v3.0** | 自进化引擎：知识收割 + 模式库 + 自动反思 |
 | **v2.1** | 状态机 + Git 检查点保护 + 自动修复循环 |
 | **v2.0** | 结构化记忆系统 + PRD 全流程自动化 |
 | **v1.0** | 基础规则引擎 + 对话驱动 |
@@ -323,7 +415,14 @@ Prompt 是"一次性的叮嘱"，关掉窗口就没了。Antigravity 是"持久�
 <details>
 <summary><b>Q：支持哪些 AI 工具？</b></summary>
 <br/>
-理论上支持所有能读取项目文件的 AI 编程助手（Cursor、Copilot、Gemini Code Assist 等）。核心原理是通过文件系统传递上下文，不依赖任何特定 API。
+理论上支持所有能读取项目文件的 AI 编程助手（Cursor、Copilot、Gemini Code Assist 等）。核心原理是通过文件系统传递上下文，不依赖任何特定 API。<br/><br/>
+<b>Dispatcher 调度功能</b>目前需要搭配 <a href="https://github.com/openai/codex">Codex CLI</a> 使用（作为 Worker 执行器）。PM 角色可由 Antigravity (Gemini)、Copilot 或 Claude 担任。
+</details>
+
+<details>
+<summary><b>Q：Dispatcher 和直接让 AI 写代码有什么区别？</b></summary>
+<br/>
+直接让 AI 在一个窗口做 20 个任务，到后面它会“忘记”前面做过的事，产生幻觉。Dispatcher 让每个子任务在<b>独立的上下文</b>中执行——就像给每个任务安排一个“新员工”，但有一个“项目经理”在上面统筹协调。PM 的上下文只保留摘要，不会爆炸。
 </details>
 
 <details>
