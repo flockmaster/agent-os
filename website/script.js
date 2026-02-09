@@ -101,7 +101,9 @@ document.querySelectorAll('.copy-btn').forEach(button => {
 
 // ===== 终端动画 =====
 function animateTerminal() {
-    const terminalLines = document.querySelectorAll('.terminal-line');
+    const activePanel = document.querySelector('.demo-panel.active');
+    if (!activePanel) return;
+    const terminalLines = activePanel.querySelectorAll('.terminal-line');
     terminalLines.forEach((line, index) => {
         line.style.opacity = '0';
         setTimeout(() => {
@@ -109,6 +111,26 @@ function animateTerminal() {
         }, index * 200);
     });
 }
+
+// ===== 演示 Tab 切换 (T-WEB-05) =====
+const demoTabButtons = document.querySelectorAll('.demo-tab-btn');
+const demoPanels = document.querySelectorAll('.demo-panel');
+
+demoTabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const targetDemo = button.getAttribute('data-demo');
+        
+        demoTabButtons.forEach(btn => btn.classList.remove('active'));
+        demoPanels.forEach(panel => panel.classList.remove('active'));
+        
+        button.classList.add('active');
+        const targetPanel = document.querySelector(`.demo-panel[data-demo="${targetDemo}"]`);
+        if (targetPanel) {
+            targetPanel.classList.add('active');
+            animateTerminal();
+        }
+    });
+});
 
 // ===== Intersection Observer for animations =====
 const observerOptions = {
@@ -131,7 +153,7 @@ const observer = new IntersectionObserver((entries) => {
 }, observerOptions);
 
 // 观察所有需要动画的元素
-document.querySelectorAll('.feature-card, .pain-card, .arch-layer, .demo-section').forEach(el => {
+document.querySelectorAll('.feature-card, .pain-card, .arch-layer, .demo-section, .role-card, .mode-card, .comparison-section').forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';
     el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';

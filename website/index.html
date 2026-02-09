@@ -322,7 +322,16 @@
     <section id="demo" class="demo-section">
         <div class="container">
             <h2 class="section-title">🎬 工作流演示</h2>
-            <div class="demo-container">
+
+            <!-- Tab 切换：调度 / 心跳 / PM对话 -->
+            <div class="demo-tabs">
+                <button class="demo-tab-btn active" data-demo="dispatch">🎯 任务调度</button>
+                <button class="demo-tab-btn" data-demo="heartbeat">💓 心跳监控</button>
+                <button class="demo-tab-btn" data-demo="pm-dialog">🤝 PM-Worker 对话</button>
+            </div>
+
+            <!-- 调度演示 -->
+            <div class="demo-container demo-panel active" data-demo="dispatch">
                 <div class="terminal-window">
                     <div class="terminal-header">
                         <div class="terminal-buttons">
@@ -330,7 +339,7 @@
                             <span class="btn-minimize"></span>
                             <span class="btn-maximize"></span>
                         </div>
-                        <div class="terminal-title">Antigravity Agent OS</div>
+                        <div class="terminal-title">Antigravity Agent OS — Dispatch</div>
                     </div>
                     <div class="terminal-body">
                         <div class="terminal-line">
@@ -363,6 +372,153 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- T-WEB-05: 心跳监控演示 -->
+            <div class="demo-container demo-panel" data-demo="heartbeat">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="btn-close"></span>
+                            <span class="btn-minimize"></span>
+                            <span class="btn-maximize"></span>
+                        </div>
+                        <div class="terminal-title">Heartbeat Monitor</div>
+                    </div>
+                    <div class="terminal-body" id="heartbeat-demo">
+                        <div class="terminal-line">
+                            <span class="prompt">PS></span>
+                            <span class="command">Import-Module .agent/dispatcher/CodexHeartbeat.psm1</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="success">[OK] Heartbeat system initialized</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="prompt">PS></span>
+                            <span class="command">Start-CodexTask -TaskId "T-003" -Prompt "编写单元测试"</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="info">[LAUNCH] Async task: T-003</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="info">         Job ID: 5</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="prompt">PS></span>
+                            <span class="command">Wait-CodexTask -TaskId "T-003" -HeartbeatTimeoutSeconds 120</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="working">[WATCH] Monitoring task: T-003</span>
+                        </div>
+                        <div class="terminal-line output heartbeat-line">
+                            <span class="dim">| [00:05] T-003 | Running... (output: 512 bytes) | HB: 3s ago | #1</span>
+                        </div>
+                        <div class="terminal-line output heartbeat-line">
+                            <span class="dim">/ [00:15] T-003 | Running... (output: 1024 bytes) | HB: 2s ago | #2</span>
+                        </div>
+                        <div class="terminal-line output heartbeat-line">
+                            <span class="dim">- [00:25] T-003 | Running... (output lines: 15) | HB: 1s ago | #3</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="success">[DONE] Task T-003 completed! Time: 02:30</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- T-WEB-06: PM-Worker 对话演示 -->
+            <div class="demo-container demo-panel" data-demo="pm-dialog">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="btn-close"></span>
+                            <span class="btn-minimize"></span>
+                            <span class="btn-maximize"></span>
+                        </div>
+                        <div class="terminal-title">PM ↔ Worker Dialog</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line output">
+                            <span class="info">📋 PM: 派发任务 T-004 → Worker</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="working">⚙️ Worker: 开始执行 "实现用户登录接口"</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="warning">❓ Worker: "数据库用 PostgreSQL 还是 SQLite？"</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="info">🧠 PM 判断: 技术选型(小), 可自行决定</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="success">✉️ PM → resume: "使用 PostgreSQL，参考 project_decisions.md"</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="working">⚙️ Worker: 收到，继续实现...</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="success">✅ Worker: 任务 T-004 完成！修改 3 个文件</span>
+                        </div>
+                        <div class="terminal-line output">
+                            <span class="success">📝 PM: PRD 状态更新 ⏳→✅, git commit 完成</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- T-WEB-07: 功能对比表 -->
+    <section id="comparison" class="comparison-section">
+        <div class="container">
+            <h2 class="section-title">⚡ vs 传统 AI 编程</h2>
+            <div class="comparison-table-wrapper">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>维度</th>
+                            <th>传统 AI 编程</th>
+                            <th class="highlight-col">Antigravity Agent OS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>记忆能力</td>
+                            <td>❌ 金鱼记忆，每次重来</td>
+                            <td class="highlight-col">✅ 短期+长期+偏好记忆</td>
+                        </tr>
+                        <tr>
+                            <td>多任务处理</td>
+                            <td>❌ 一个窗口做到死</td>
+                            <td class="highlight-col">✅ PM-Worker 自动调度</td>
+                        </tr>
+                        <tr>
+                            <td>错误处理</td>
+                            <td>❌ 同样的坑踩 N 次</td>
+                            <td class="highlight-col">✅ 进化引擎自动学习</td>
+                        </tr>
+                        <tr>
+                            <td>任务监控</td>
+                            <td>❌ 被动等待，不知进度</td>
+                            <td class="highlight-col">✅ 心跳监控，实时状态</td>
+                        </tr>
+                        <tr>
+                            <td>代码质量</td>
+                            <td>❌ 忘了 commit、忘了测试</td>
+                            <td class="highlight-col">✅ Git Guards 自动守卫</td>
+                        </tr>
+                        <tr>
+                            <td>需求管理</td>
+                            <td>❌ 口头描述，容易遗漏</td>
+                            <td class="highlight-col">✅ PRD 驱动，门禁把关</td>
+                        </tr>
+                        <tr>
+                            <td>AI 工具锁定</td>
+                            <td>❌ 换工具就要重配</td>
+                            <td class="highlight-col">✅ 适配 Gemini/Copilot/Claude</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
