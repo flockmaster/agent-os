@@ -21,6 +21,7 @@
                 <li><a href="#hero">首页</a></li>
                 <li><a href="#features">核心功能</a></li>
                 <li><a href="#architecture">架构</a></li>
+                <li><a href="#pm-worker">PM-Worker</a></li>
                 <li><a href="#demo">演示</a></li>
                 <li><a href="#install" class="cta-btn">快速开始</a></li>
             </ul>
@@ -164,6 +165,34 @@
                     </ul>
                     <div class="feature-glow"></div>
                 </div>
+
+                <!-- Feature 5: Git Guards (T-WEB-01) -->
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>智能守卫</h3>
+                    <p>Git Hooks 自动化守卫，确保代码质量和上下文同步</p>
+                    <ul class="feature-list">
+                        <li>✓ Pre-commit: 上下文同步检查</li>
+                        <li>✓ Post-commit: 自动 Checkpoint</li>
+                        <li>✓ 冲突检测 & TODO 扫描</li>
+                        <li>✓ 会话看门狗超时提醒</li>
+                    </ul>
+                    <div class="feature-glow"></div>
+                </div>
+
+                <!-- Feature 6: Heartbeat Monitor (T-WEB-04) -->
+                <div class="feature-card">
+                    <div class="feature-icon">💓</div>
+                    <h3>心跳监控</h3>
+                    <p>实时监控 Codex Worker 执行状态，智能超时检测</p>
+                    <ul class="feature-list">
+                        <li>✓ 异步任务启动 (Start-Job)</li>
+                        <li>✓ 输出增长心跳检测</li>
+                        <li>✓ 2分钟无活动自动报警</li>
+                        <li>✓ 多任务并行监控</li>
+                    </ul>
+                    <div class="feature-glow"></div>
+                </div>
             </div>
         </div>
     </section>
@@ -182,11 +211,21 @@
                     </div>
                 </div>
                 <div class="arch-arrow">⬇️</div>
+                <div class="arch-layer layer-guards">
+                    <h4>🛡️ 守卫层</h4>
+                    <div class="arch-boxes">
+                        <div class="arch-box">Pre-commit Guard</div>
+                        <div class="arch-box">Post-commit Guard</div>
+                        <div class="arch-box">Session Watchdog</div>
+                    </div>
+                </div>
+                <div class="arch-arrow">⬇️</div>
                 <div class="arch-layer layer-dispatcher">
                     <h4>🎯 调度层</h4>
                     <div class="arch-boxes">
                         <div class="arch-box">Antigravity PM</div>
                         <div class="arch-box">Task Queue</div>
+                        <div class="arch-box">💓 Heartbeat</div>
                     </div>
                 </div>
                 <div class="arch-arrow">⬇️</div>
@@ -195,6 +234,7 @@
                     <div class="arch-boxes">
                         <div class="arch-box">Codex Worker</div>
                         <div class="arch-box">Session Manager</div>
+                        <div class="arch-box">Resume / Fork</div>
                     </div>
                 </div>
                 <div class="arch-arrow">⬇️</div>
@@ -204,6 +244,74 @@
                         <div class="arch-box">Active Context</div>
                         <div class="arch-box">Project Decisions</div>
                         <div class="arch-box">User Preferences</div>
+                    </div>
+                </div>
+                <div class="arch-arrow">⬇️</div>
+                <div class="arch-layer layer-evolution">
+                    <h4>🧬 进化层</h4>
+                    <div class="arch-boxes">
+                        <div class="arch-box">Knowledge Base</div>
+                        <div class="arch-box">Pattern Library</div>
+                        <div class="arch-box">Reflection Engine</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PM-Worker 协作架构 (T-WEB-02) -->
+    <section id="pm-worker" class="pm-worker-section">
+        <div class="container">
+            <h2 class="section-title">🤝 PM-Worker 协作模式</h2>
+            <p class="section-subtitle">一个 AI 读 PRD 拆任务，另一个 AI 写代码——分工合作、自动循环</p>
+            <div class="pm-worker-grid">
+                <div class="role-card pm-card">
+                    <div class="role-icon">📥</div>
+                    <h3>PM (Antigravity)</h3>
+                    <ul>
+                        <li>📚 读取 PRD，理解需求意图</li>
+                        <li>✂️  拆解任务，分析依赖关系</li>
+                        <li>🎯 派发任务，构造 Worker Prompt</li>
+                        <li>👓  监控心跳，超时重启 / 分叉</li>
+                        <li>✉️  回答 Worker 问题，补充上下文</li>
+                        <li>✅ 更新 PRD 状态，Git 提交</li>
+                    </ul>
+                </div>
+                <div class="flow-arrows">
+                    <div class="flow-line">
+                        <span class="flow-label">Prompt →</span>
+                    </div>
+                    <div class="flow-line reverse">
+                        <span class="flow-label">← Result</span>
+                    </div>
+                </div>
+                <div class="role-card worker-card">
+                    <div class="role-icon">⚙️</div>
+                    <h3>Worker (Codex CLI)</h3>
+                    <ul>
+                        <li>📩 接收任务 Prompt</li>
+                        <li>💻 写代码、修 Bug、写测试</li>
+                        <li>❓ 遇到疑问反馈 PM</li>
+                        <li>📤 完成后报告结果</li>
+                        <li>🔄 失败时自动重试</li>
+                        <li>🚧 无法继续时标记 BLOCKED</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="session-modes">
+                <h3>🔄 会话管理三件套</h3>
+                <div class="mode-cards">
+                    <div class="mode-card">
+                        <code>exec</code>
+                        <p>新建任务，干净上下文</p>
+                    </div>
+                    <div class="mode-card">
+                        <code>resume</code>
+                        <p>中断恢复，接着上次做</p>
+                    </div>
+                    <div class="mode-card">
+                        <code>fork</code>
+                        <p>换策略重来，保留历史</p>
                     </div>
                 </div>
             </div>

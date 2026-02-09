@@ -633,6 +633,183 @@ body {
     50% { transform: translateY(10px); }
 }
 
+/* Guards 层和进化层颜色 */
+.layer-guards {
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.layer-guards:hover {
+    border-color: #10b981;
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.2);
+}
+
+.layer-guards .arch-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.layer-evolution {
+    border-color: rgba(124, 58, 237, 0.3);
+}
+
+.layer-evolution:hover {
+    border-color: #7c3aed;
+    box-shadow: 0 10px 40px rgba(124, 58, 237, 0.2);
+}
+
+.layer-evolution .arch-box {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.05));
+    border-color: rgba(124, 58, 237, 0.3);
+}
+
+/* ===== PM-Worker Section (T-WEB-02) ===== */
+.pm-worker-section {
+    padding: 100px 0;
+    background: linear-gradient(180deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+}
+
+.section-subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    margin-top: -20px;
+    margin-bottom: 50px;
+}
+
+.pm-worker-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 30px;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto 60px;
+}
+
+.role-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 40px 30px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition-normal);
+}
+
+.role-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.pm-card {
+    border-color: rgba(255, 107, 53, 0.3);
+}
+
+.pm-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 20px 50px var(--glow-primary);
+}
+
+.worker-card {
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.worker-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 20px 50px rgba(59, 130, 246, 0.2);
+}
+
+.role-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.role-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.role-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.role-card li {
+    padding: 8px 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.role-card li:last-child {
+    border-bottom: none;
+}
+
+.flow-arrows {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.flow-line {
+    padding: 10px 20px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.flow-line.reverse {
+    background: linear-gradient(90deg, #3b82f6, #10b981);
+}
+
+.session-modes {
+    text-align: center;
+}
+
+.session-modes h3 {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+}
+
+.mode-cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.mode-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 30px;
+    width: 200px;
+    transition: var(--transition-normal);
+}
+
+.mode-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-5px);
+}
+
+.mode-card code {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.mode-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
 /* ===== Demo Section ===== */
 .demo-section {
     padding: 100px 0;
@@ -923,6 +1100,14 @@ body {
     .features-grid,
     .pain-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .pm-worker-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .flow-arrows {
+        flex-direction: row;
     }
     
     .nav-links {
