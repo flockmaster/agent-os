@@ -1,8 +1,8 @@
 ---
-session_id: heartbeat-and-website-v1
-task_status: SUSPENDED
+session_id: backlog-completion-v1
+task_status: IDLE
 auto_fix_attempts: 0
-last_checkpoint: checkpoint-20260210-suspend
+last_checkpoint: checkpoint-20260210-backlog-done
 last_session_end: 2026-02-10
 stash_applied: false
 ---
@@ -12,43 +12,36 @@ stash_applied: false
 这里是 Agent 的"办公桌"。记录当前正在进行的任务细节。
 
 ## 1. Current Goal (当前目标)
-> **Agent OS 系统完善**: 心跳监控模块开发、项目展示网页、安装脚本修复、文档更新。
+> **无活跃任务**。Backlog 全部 20 项已完成。
 
-**Backlog**: `docs/BACKLOG.md` (完整待办清单，约 20h 工作量)
-**上次重点**: 心跳模块 v2.0 测试通过 (4/4 PASS)，Backlog 文档已创建。
+**Backlog**: `docs/BACKLOG.md` (status: COMPLETED ✅)
 
 ## 2. Task Queue (任务队列)
-Format: `[Status] TaskID: Description (Related File)`
 
-### 已完成 (Done)
-- [x] 创建项目展示网页 (website/index.html, style.css, script.js)
-- [x] 心跳设计文档 (docs/task-monitoring-heartbeat.md)
-- [x] CodexHeartbeat.psm1 v2.0 模块开发 (.codex/heartbeat/)
-- [x] Test-Heartbeat.ps1 测试套件 4/4 通过
-- [x] 创建 Backlog 待办清单 (docs/BACKLOG.md)
+### 已完成 (Done) — 本轮全部清零
+- [x] T-HOOK-01~04: [P0] setup.ps1/sh 自动安装 Git Hooks + 验证 + Windows 适配 (`d601494`)
+- [x] T-HB-01: [P1] Sandbox 默认 `danger-full-access` (`be3d0a0`)
+- [x] T-HB-02: [P1] 心跳模块迁移到 `.agent/dispatcher/` + config 注册 (`c912b15`)
+- [x] T-AGENT-01: [P1] `codex-dispatch.md` Step 5/6 心跳集成 (`5b435d0`)
+- [x] T-AGENT-02~08: [P2] start.md, status.md, core.py, main.py, heartbeat doc 联动更新 (`de52546`)
+- [x] T-WEB-01~04: [P2] 网页新增守卫卡片、心跳卡片、PM-Worker 章节、6 层架构图 (`d3c2c6d`)
+- [x] T-WEB-05~08: [P3] Demo 三标签页、对比表、心跳动画 (`34f0977`)
+- [x] T-HB-03~06: [P3] Start-CodexTaskPool + Restore-CodexTasks + bash 版心跳 (`019a365`)
 
-### 待继续 (Pending) — 详见 docs/BACKLOG.md
-- [ ] T-HOOK-01~04: [P0] setup.ps1 补装 Git Hooks
-- [ ] T-HB-01: [P1] Codex sandbox 只读问题修复
-- [ ] T-HB-02: [P1] 心跳模块迁移到 .agent/ 体系
-- [ ] T-AGENT-01: [P1] codex-dispatch.md 集成心跳
-- [ ] T-AGENT-02~08: [P2] 其余 .agent 文件联动更新
-- [ ] T-WEB-01~04: [P2] 网页内容丰富 (Hooks/PM-Worker/心跳)
-- [ ] T-WEB-05~08: [P3] 网页演示增强
-- [ ] T-HB-03~06: [P3] 心跳高级功能 (并行/持久化/bash版)
+### 待继续 (Pending)
+_空_
 
 ## 3. Scratchpad (草稿区)
-- 2026-02-10: 心跳模块 v2.0 ALL 4 TESTS PASSED
-  - 关键修复: HasMoreData → ChildJobs[0].Output.Count (精准检测活动)
-  - 已知限制: Codex sandbox 只读，任务完成但产物文件未生成
-  - 方案: Start-Job (非 Start-Process)，JSON state 文件轮询
-- 2026-02-10: 发现 setup.ps1 未调用 install_hooks.py，Hooks 从未被安装到 .git/hooks/
-- 2026-02-10: 网页缺少 Hooks/PM-Worker/心跳 的深入介绍
+- 2026-02-10: Backlog 20/20 完成，所有代码已提交 (codex-dispatcher-v3 分支)
+- 关键产出:
+  - CodexHeartbeat.psm1 v2.1 (PowerShell) + codex_heartbeat.sh (Bash)
+  - 6 层架构网页 + 3 个 Demo Tab + 对比表
+  - setup.ps1/sh 自动安装 Git Hooks
 
 ## 4. History (近 5 条记录)
-1. 2026-02-10: 创建 BACKLOG.md 待办清单 (20 项, ~20h)
-2. 2026-02-10: 心跳模块 v2.0 测试全部通过 (4/4)
-3. 2026-02-10: 项目展示网页创建完成 (sci-fi 风格)
-4. 2026-02-08: Evolution Engine 部署完成
-5. 2026-02-08: 系统导出 (Template) 完成
+1. 2026-02-10: Backlog 全部完成 (20/20, P0~P3)
+2. 2026-02-10: 心跳高级功能完成 (并行池/持久化/bash版)
+3. 2026-02-10: 网页演示增强完成 (demo tabs/对比表)
+4. 2026-02-10: 网页内容丰富完成 (守卫/PM-Worker/心跳卡片)
+5. 2026-02-10: Agent 文件联动更新完成 (start/status/core/main)
 
