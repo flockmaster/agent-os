@@ -30,7 +30,10 @@ function Start-CodexTask {
         [Parameter(Mandatory)][string]$Prompt,
         [string]$WorkDir = (Get-Location).Path,
         [string]$Model = "",
-        [int]$TimeoutSeconds = 3600
+        [int]$TimeoutSeconds = 3600,
+        [ValidateSet("read-only","workspace-write","full-auto","danger-full-access")]
+        [string]$SandboxMode = "danger-full-access",
+        [string[]]$AddDirs = @()
     )
 
     Initialize-CodexHeartbeat
@@ -42,6 +45,16 @@ function Start-CodexTask {
     $argList = @("exec", "--full-auto", "-o", $lastMsgFile, "-C", $WorkDir)
     if ($Model) {
         $argList += @("-m", $Model)
+    }
+    # T-HB-01: Sandbox 模式控制（默认 danger-full-access 以确保文件可写）
+    if ($SandboxMode -eq "danger-full-access") {
+        $argList += @("--sandbox", "danger-full-access")
+    }
+    # 额外目录访问
+    foreach ($dir in $AddDirs) {
+        if (Test-Path $dir) {
+            $argList += @("--add-dir", $dir)
+        }
     }
     $argList += $Prompt
 
@@ -70,6 +83,7 @@ function Start-CodexTask {
     $state["lastMsgFile"] = $lastMsgFile
     $state["lastMsgSize"] = 0
     $state["timeout"] = $TimeoutSeconds
+    $state["sandboxMode"] = $SandboxMode
     $state["exitCode"] = $null
     $state["error"] = $null
     $state | ConvertTo-Json -Depth 5 | Set-Content $stateFile -Encoding UTF8
