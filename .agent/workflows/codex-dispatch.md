@@ -5,7 +5,7 @@ description: 自动派发 Codex 任务流水线
 # Codex Task Dispatcher v3.0 (Agent Native)
 
 > **核心理念**: 利用大模型的自然语言理解能力，直接从 PRD 中识别和派发任务。
-> **无需脚本解析**，完全由 Agent 主导调度。
+> **无需外部脚本或 Python 解析**，完全由 Agent 主导调度。
 
 ---
 
@@ -72,18 +72,23 @@ description: 自动派发 Codex 任务流水线
 
 ### Step 5: 启动 Codex Worker 🚀
 
-> **💡 心跳集成 (T-AGENT-01)**: 推荐使用 `Start-CodexTask` 封装，自动管理 Job 生命周期和心跳监控。
->
-> ```powershell
-> # 加载心跳模块
-> Import-Module .agent/dispatcher/CodexHeartbeat.psm1
->
-> # 启动任务（等效于 codex exec --full-auto --sandbox danger-full-access）
-> $task = Start-CodexTask -TaskId "T-002" -Prompt $workerPrompt -WorkDir $projectDir
->
-> # 实时监控（包含心跳超时检测）
-> $result = Wait-CodexTask -TaskId "T-002" -HeartbeatTimeoutSeconds 120
-> ```
+#### 5.0 ⚠️ Windows 沙箱问题 (2026-02-10 验证)
+
+**重要发现**：在 Windows 环境下，`--full-auto` 和 `--sandbox workspace-write` 均无法正常写入文件。
+必须使用 `--dangerously-bypass-approvals-and-sandbox` 参数才能确保 Codex 正常执行文件操作。
+
+```bash
+# ✅ Windows 正确调用方式 (已验证)
+codex exec --json --dangerously-bypass-approvals-and-sandbox "{Prompt}"
+
+# ❌ 以下方式在 Windows 上文件写入失败
+codex exec --json --full-auto "{Prompt}"                    # 失败
+codex exec --json --sandbox workspace-write "{Prompt}"      # 失败
+codex exec --json --sandbox danger-full-access "{Prompt}"   # 失败
+```
+
+> **安全提示**：`--dangerously-bypass-approvals-and-sandbox` 绕过所有安全检查，
+> 仅适用于受信任的自动化环境（如 Agent OS 内部调度）。
 
 #### 5.1 会话启动策略 (关键决策点)
 
@@ -91,9 +96,9 @@ description: 自动派发 Codex 任务流水线
 
 | 场景 | 命令 | 说明 |
 |------|------|------|
-| **全新任务** | `codex exec --full-auto` | 干净上下文，零污染 |
-| **任务中断恢复** (同任务继续) | `codex exec resume --last --full-auto` | 保持完整对话历史，接着干 |
-| **任务中断恢复** (指定会话) | `codex exec resume {SESSION_ID} --full-auto` | 精确恢复到指定会话 |
+| **全新任务** | `codex exec --json --dangerously-bypass-approvals-and-sandbox` | 干净上下文，零污染，完整写入权限 |
+| **任务中断恢复** (同任务继续) | `codex exec resume --last --dangerously-bypass-approvals-and-sandbox` | 保持完整对话历史，接着干 |
+| **任务中断恢复** (指定会话) | `codex exec resume {SESSION_ID} --dangerously-bypass-approvals-and-sandbox` | 精确恢复到指定会话 |
 | **任务失败重试** (换策略) | `codex fork --last` | 继承上下文但走新分支，避免重复踩坑 |
 | **交互式调试** | `codex resume --last` | 手动介入，人机协作排查问题 |
 
@@ -148,10 +153,10 @@ codex fork {SESSION_ID}
 **适用场景**：新任务，无需任何历史上下文。
 
 ```bash
-# 非交互式 (推荐用于调度)
-codex exec --full-auto --json "{Prompt}"
+# 非交互式 (推荐用于调度) - Windows 验证通过
+codex exec --json --dangerously-bypass-approvals-and-sandbox "{Prompt}"
 
-# 交互式
+# 交互式 (手动开发)
 codex --full-auto "{Prompt}"
 ```
 
@@ -196,6 +201,7 @@ PM 应在 `active_context.md` 中记录每个任务的 Codex 会话 ID：
 codex exec [OPTIONS] [PROMPT]
 
 # 关键选项:
+--dangerously-bypass-approvals-and-sandbox  # ⭐ Windows 必须使用，绕过沙箱限制
 --full-auto                 # 全自动模式 (sandbox=workspace-write + approval=on-request)
 --json                      # JSONL 事件流输出，便于程序化监控
 -m, --model <MODEL>         # 指定模型 (如 o3, gpt-4.1 等)
@@ -207,35 +213,54 @@ codex exec [OPTIONS] [PROMPT]
 --add-dir <DIR>             # 添加额外可写目录
 ```
 
-### Step 6: 实时监控 👀
+#### 5.8 PM 异步等待机制 (2026-02-10 验证)
 
-> **💡 心跳监控模式 (T-AGENT-01)**: 使用 `Wait-CodexTask` 替代手动读 JSONL，
-> 自动轮询 Job 状态 + 输出文件增长 + ChildJobs 输出计数。
->
-> ```powershell
-> $result = Wait-CodexTask -TaskId "T-002" `
->     -PollIntervalSeconds 10 `
->     -TimeoutSeconds 3600 `
->     -HeartbeatTimeoutSeconds 120
->
-> switch ($result.Status) {
->     "DONE"              { # 更新 PRD，继续下一个任务 }
->     "ERROR"             { # 重试或标记 BLOCKED }
->     "HEARTBEAT_TIMEOUT" { # 心跳超时处理（见下方）}
->     "TIMEOUT"           { # 任务级超时 }
-> }
-> ```
+当 PM (Antigravity) 调用 Codex Worker 时，使用异步轮询机制等待结果：
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  1. run_command("codex exec ...", WaitMsBeforeAsync=500)       │
+│     ↓                                                          │
+│     命令启动 → 立即返回 CommandId (进入后台)                     │
+│                                                                 │
+│  2. command_status(CommandId, WaitDurationSeconds=60)          │
+│     ↓                                                          │
+│     长轮询等待，UI 显示: "Waiting for Codex Worker..."          │
+│     ├─ 任务完成 → 返回 DONE + JSONL 事件流                      │
+│     └─ 超时未完成 → 返回 RUNNING，可继续轮询                     │
+│                                                                 │
+│  3. 解析 JSONL 事件流                                           │
+│     ├─ thread.started → 记录 SESSION_ID                        │
+│     ├─ agent_message + "?" → 检测 QUESTION                     │
+│     ├─ command_execution → 记录进度                            │
+│     ├─ error → 判断是否可重试                                   │
+│     └─ turn.completed → 任务完成                                │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**JSONL 事件类型参考**：
+
+| 事件类型 | 含义 | PM 响应 |
+|----------|------|--------|
+| `thread.started` | 会话启动，包含 `thread_id` | 记录 SESSION_ID |
+| `turn.started` | 轮次开始 | 无需处理 |
+| `item.completed` (reasoning) | Codex 思考过程 | 可选记录 |
+| `item.completed` (command_execution) | 执行命令结果 | 检查 exit_code |
+| `item.completed` (agent_message) | Codex 输出消息 | 检测问题/完成 |
+| `turn.completed` | 轮次结束，包含 token 用量 | 任务完成 |
+| `error` | 执行错误 | 判断重试策略 |
+
+### Step 6: 实时监控 👀
 
 Agent 读取 Worker 的 stdout，解析 JSONL 事件：
 
 | 事件/模式 | Agent 响应 |
-|----------|----------|
+|----------|-----------|
 | `agent_message` 包含疑问句 | 尝试回答 → 或标记 BLOCKED |
 | `tool_call` / `tool_result` | 记录进度 |
 | `error` 事件 | 判断是否可重试 |
 | `session_end` 且成功 | 更新 PRD 状态为 DONE |
 | 超时 (15分钟无输出) | 终止进程，标记 BLOCKED |
-| `HEARTBEAT_TIMEOUT` | 2分钟无活动，触发心跳超时决策 |
 
 ### Step 7: 干预决策 🧑‍⚖️ (如需)
 
@@ -279,22 +304,7 @@ Agent 读取 Worker 的 stdout，解析 JSONL 事件：
 
 ## 特殊情况处理
 
-### � 心跳超时处理 (T-AGENT-01)
-
-当 `Wait-CodexTask` 返回 `HEARTBEAT_TIMEOUT` 时：
-
-```
-心跳超时 (2分钟无活动)
-    │
-    ├─ 第 1 次超时 → resume 恢复
-    │   codex exec resume --last --full-auto "请继续完成"
-    │
-    ├─ 第 2 次超时 → 增加 HeartbeatTimeout 到 300s 后 resume
-    │
-    └─ 第 3 次超时 → fork 换策略 或标记 BLOCKED
-```
-
-### �🚫 任务阻塞
+### 🚫 任务阻塞
 1. 记录阻塞原因到 `active_context.md`
 2. 查找其他无依赖的 PENDING 任务
 3. 如果有 → 跳过阻塞任务，执行其他任务
@@ -364,9 +374,9 @@ Agent: T-004 执行中...
 
 | 维度 | v2.0 (脚本驱动) | v3.0 (Agent 原生) |
 |-----|----------------|------------------|
-| PRD 解析 | parser.py 硬编码 | Agent 自然语言理解 |
+| PRD 解析 | 脚本硬编码 | Agent 自然语言理解 |
 | PRD 格式要求 | 严格表格格式 | 灵活，任意结构 |
-| 调度逻辑 | dispatch_loop.sh | Agent 思考判断 |
+| 调度逻辑 | 外部脚本 | Agent 思考判断 |
 | 上下文管理 | 每次全新启动 | resume/fork 智能恢复 |
 | 可扩展性 | 需改代码 | 直接改 Prompt |
 | 透明度 | 脚本黑盒 | Agent 每步可见 |
