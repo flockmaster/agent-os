@@ -72,6 +72,19 @@ description: 自动派发 Codex 任务流水线
 
 ### Step 5: 启动 Codex Worker 🚀
 
+> **💡 心跳集成 (T-AGENT-01)**: 推荐使用 `Start-CodexTask` 封装，自动管理 Job 生命周期和心跳监控。
+>
+> ```powershell
+> # 加载心跳模块
+> Import-Module .agent/dispatcher/CodexHeartbeat.psm1
+>
+> # 启动任务（等效于 codex exec --full-auto --sandbox danger-full-access）
+> $task = Start-CodexTask -TaskId "T-002" -Prompt $workerPrompt -WorkDir $projectDir
+>
+> # 实时监控（包含心跳超时检测）
+> $result = Wait-CodexTask -TaskId "T-002" -HeartbeatTimeoutSeconds 120
+> ```
+
 #### 5.1 会话启动策略 (关键决策点)
 
 根据任务状态选择不同的 Codex 命令：
@@ -196,15 +209,33 @@ codex exec [OPTIONS] [PROMPT]
 
 ### Step 6: 实时监控 👀
 
+> **💡 心跳监控模式 (T-AGENT-01)**: 使用 `Wait-CodexTask` 替代手动读 JSONL，
+> 自动轮询 Job 状态 + 输出文件增长 + ChildJobs 输出计数。
+>
+> ```powershell
+> $result = Wait-CodexTask -TaskId "T-002" `
+>     -PollIntervalSeconds 10 `
+>     -TimeoutSeconds 3600 `
+>     -HeartbeatTimeoutSeconds 120
+>
+> switch ($result.Status) {
+>     "DONE"              { # 更新 PRD，继续下一个任务 }
+>     "ERROR"             { # 重试或标记 BLOCKED }
+>     "HEARTBEAT_TIMEOUT" { # 心跳超时处理（见下方）}
+>     "TIMEOUT"           { # 任务级超时 }
+> }
+> ```
+
 Agent 读取 Worker 的 stdout，解析 JSONL 事件：
 
 | 事件/模式 | Agent 响应 |
-|----------|-----------|
+|----------|----------|
 | `agent_message` 包含疑问句 | 尝试回答 → 或标记 BLOCKED |
 | `tool_call` / `tool_result` | 记录进度 |
 | `error` 事件 | 判断是否可重试 |
 | `session_end` 且成功 | 更新 PRD 状态为 DONE |
 | 超时 (15分钟无输出) | 终止进程，标记 BLOCKED |
+| `HEARTBEAT_TIMEOUT` | 2分钟无活动，触发心跳超时决策 |
 
 ### Step 7: 干预决策 🧑‍⚖️ (如需)
 
@@ -248,7 +279,22 @@ Agent 读取 Worker 的 stdout，解析 JSONL 事件：
 
 ## 特殊情况处理
 
-### 🚫 任务阻塞
+### � 心跳超时处理 (T-AGENT-01)
+
+当 `Wait-CodexTask` 返回 `HEARTBEAT_TIMEOUT` 时：
+
+```
+心跳超时 (2分钟无活动)
+    │
+    ├─ 第 1 次超时 → resume 恢复
+    │   codex exec resume --last --full-auto "请继续完成"
+    │
+    ├─ 第 2 次超时 → 增加 HeartbeatTimeout 到 300s 后 resume
+    │
+    └─ 第 3 次超时 → fork 换策略 或标记 BLOCKED
+```
+
+### �🚫 任务阻塞
 1. 记录阻塞原因到 `active_context.md`
 2. 查找其他无依赖的 PENDING 任务
 3. 如果有 → 跳过阻塞任务，执行其他任务
